@@ -7,22 +7,29 @@ import { CgProfile, CgLock } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import authenSlide from "./../../../../redux";
 import { signin } from "../../../../redux/authenSlice";
-
+import { ROUTES } from "./../../../../context/routes";
 import "./SignIn.scss";
 import { validateInput } from "../../../../helpers";
+import signin_logo from "./../../../../assets/images/signin_logo.png";
 
 function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const authenState = useSelector((state) => state.authen);
+  useEffect(() => {
+    if (authenState?.token) {
+      console.log(authenState.token);
+      navigate("/");
+    }
+  }, [authenState.token]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const user = useSelector((state) => state.authen.user);
-
   return (
     <>
       <div className="container">
+        <div className="signin-logo-container">
+          <img className="logo" src={signin_logo} />
+        </div>
         <div className="inner-container">
           <h2>Sign In</h2>
           <div className="input-group">
@@ -62,7 +69,7 @@ function SignIn() {
               if (usernameRes.status == true && passwordRes.status == true) {
                 dispatch(signin({ username, password }));
 
-                if (Object.keys(user).length == 0) {
+                if (!authenState?.token) {
                   toast.warning("Username or password isn't correct");
                 }
               } else {
@@ -79,10 +86,12 @@ function SignIn() {
           >
             Sign In
           </button>
-          <Link className="link" to="forgot/password">
+          <Link className="link" to={ROUTES.FORGOT_PASSWORD}>
             Forgot Password?
           </Link>
-          {Object.keys(user).length > 0 && navigate("/")}
+          <Link className="link" to={ROUTES.SIGN_UP}>
+            Sign Up
+          </Link>
         </div>
         <ToastContainer />
       </div>

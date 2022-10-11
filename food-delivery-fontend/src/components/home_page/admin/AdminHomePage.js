@@ -1,11 +1,15 @@
 import React from "react";
 import { AdminNavbar } from "../../navbar";
 import "./AdminHomePage.scss";
+import { UserHeader } from "../../header";
 
 const AdminHomePage = () => {
   return (
     <>
-      <AdminNavbar />
+      <div className="">
+        <UserHeader />
+        <AdminNavbar />
+      </div>
     </>
   );
 };

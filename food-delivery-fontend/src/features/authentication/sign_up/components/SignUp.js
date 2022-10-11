@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { CgProfile, CgLock } from "react-icons/cg";
@@ -16,11 +16,20 @@ function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user = useSelector((state) => state.authen.user);
+  const token = useSelector((state) => state.authen.token);
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
 
   return (
     <>
       <div className="container">
+        <div className="signup-logo-container">
+          {/* <img className="logo" src={signin_logo} /> */}
+        </div>
         <div className="inner-container">
           <h2>Sign Up</h2>
           <div className="input-group">
@@ -64,7 +73,7 @@ function SignUp() {
             />
           </div>
           <button
-            onClick={() => dispatch(signup({ username, password }))}
+            onClick={() => dispatch(signup({ username, password, email }))}
             className="btn"
           >
             Sign Up
@@ -72,7 +81,6 @@ function SignUp() {
           <Link className="link" to={ROUTES.SIGN_IN}>
             Sign In
           </Link>
-          {Object.keys(user).length > 0 && navigate("/")}
         </div>
       </div>
     </>

@@ -1,14 +1,6 @@
 import { getUser, insertUser } from "./../controller/UserController";
 
 const routes = (app) => {
-  // app.route("/user").get((req, res, next) => {
-  //   // middleware
-  //   console.log(`Request from: ${req.originalUrl}`);
-  //   console.log(`Request type: ${req.method}`);
-  //   // res.send("ok");
-  //   next();
-  // }, getUser);
-
   app
     .route("/signin")
     .get((req, res, next) => {
@@ -19,6 +11,7 @@ const routes = (app) => {
     .post(getUser);
 
   app.route("/signup").post(insertUser);
+  app.route("/logout").post((req, res) => {});
 };
 
 export default routes;

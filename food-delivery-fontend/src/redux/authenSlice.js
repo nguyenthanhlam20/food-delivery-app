@@ -17,17 +17,26 @@ export const signup = createAsyncThunk("user/signup", async (user) => {
 const authenSlice = createSlice({
   name: "authen",
   initialState: {
-    user: Object,
+    user: null,
+    token: null,
   },
-  reducers: {},
+  reducers: {
+    signOut: (state, action) => {
+      state.user = null;
+      state.token = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(signin.fulfilled, (state, action) => {
-      console.log(action.payload);
-      state.user = action.payload;
+      const { user, accessToken } = action.payload;
+      state.user = user;
+      state.token = accessToken;
     });
     builder.addCase(signup.fulfilled, (state, action) => {
       if (action.payload.rowAffected == 1) {
-        state.user = action.payload.user;
+        const { user, accessToken } = action.payload;
+        state.user = user;
+        state.token = accessToken;
       }
     });
   },
