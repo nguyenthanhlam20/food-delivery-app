@@ -1,3 +1,3 @@
 import { authenServices } from "./authenServices";
-
-export { authenServices };
+import userServices from "./userServices";
+export { authenServices, userServices };

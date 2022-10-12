@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CgProfile, CgLock } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { ROUTES } from "./../../../../context/routes";
+import { CONSTANT_ROUTE } from "./../../../../constants";
 import authenSlide from "./../../../../redux";
 import { signup } from "../../../../redux/authenSlice";
 // import "./ChangePasword.scss";
@@ -69,7 +69,7 @@ function ChangePasword() {
           >
             Submit
           </button>
-          <Link className="link" to={ROUTES.SIGN_IN}>
+          <Link className="link" to={CONSTANT_ROUTE.SIGN_IN}>
             Sign In
           </Link>
           {Object.keys(user).length > 0 && navigate("/")}

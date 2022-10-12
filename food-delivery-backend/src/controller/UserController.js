@@ -18,6 +18,15 @@ export async function getUser(req, res) {
   }
 }
 
+export async function getUsers(req, res) {
+  const queryString = `SELECT * FROM [User]`;
+  const data = await executeQuery(queryString);
+
+  const users = data;
+  // console.log(data);
+  return res.json({ users });
+}
+
 export async function insertUser(req, res) {
   const user = req.body;
   const queryString = `INSERT INTO [dbo].[User]

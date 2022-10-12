@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./UserHeader.scss";
 import { IoLogoOctocat } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import authenSlice from "../../redux/authenSlice";
+import defaultAvatar from "./../../assets/images/default_avatar.png";
 
 const UserHeader = () => {
   const user = useSelector((state) => state.authen.user);
-  // console.log(user);
-  const navigator = useNavigate();
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [settingStyle, setSettingStyle] = useState(false);
 
   const { signOut } = authenSlice.actions;
 
@@ -21,17 +24,36 @@ const UserHeader = () => {
           <span className="logo-name">food delivery</span>
         </div>
         <div className="profile">
-          <img className="avatar" src={user?.imgUrl} alt="avatar" />
-          <span className="name">{user?.username}</span>
+          <div className="avatar-container">
+            <img
+              className="avatar"
+              src={defaultAvatar}
+              onClick={() => setSettingStyle(!settingStyle)}
+            />
+            <div
+              style={{ display: settingStyle ? "block" : "none" }}
+              className="settings"
+            >
+              <ul className="options">
+                <li className="opt">
+                  <IoLogoOctocat className="icon" />
+                  <span className="title">Profile</span>
+                </li>
+                <li
+                  className="opt"
+                  onClick={() => {
+                    dispatch(signOut());
+                    navigate("/signin");
+                  }}
+                >
+                  <IoLogoOctocat className="icon" />
+                  <span className="title">Log Out</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <span className="name">Name</span>
         </div>
-        <button
-          onClick={() => {
-            dispatch(signOut());
-            navigator("/signin");
-          }}
-        >
-          Sign Out
-        </button>
       </div>
     </>
   );

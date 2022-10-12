@@ -1,4 +1,4 @@
-import { getUser, insertUser } from "./../controller/UserController";
+import { getUser, insertUser, getUsers } from "./../controller/UserController";
 
 const routes = (app) => {
   app
@@ -12,6 +12,8 @@ const routes = (app) => {
 
   app.route("/signup").post(insertUser);
   app.route("/logout").post((req, res) => {});
+
+  app.route("/authen/manage/user/get").get(getUsers);
 };
 
 export default routes;

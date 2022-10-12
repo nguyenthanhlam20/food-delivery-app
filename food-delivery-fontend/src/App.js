@@ -1,19 +1,30 @@
 // import './App.css';
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { UserHeader } from "./components/header";
 
-import { ROUTES } from "./context/routes";
-import * as Pages from "./pages";
+import { routes } from "./context/routes";
 
 function App() {
+  const renderRoute = () => {
+    return routes.map((route) => {
+      // console.log(route);
+      return (
+        <Route
+          key={route.path}
+          path={route.path}
+          element={route.component}
+          exact={route.exact}
+        />
+      );
+    });
+  };
+
   return (
     <>
       <Router>
-        <Routes>
-          <Route path={ROUTES.HOME_PAGE} element={<Pages.HomePage />} />
-          <Route path={ROUTES.SIGN_IN} element={<Pages.SignInPage />} />
-          <Route path={ROUTES.SIGN_UP} element={<Pages.SignUpPage />} />
-        </Routes>
+        {/* <UserHeader /> */}
+        <Routes>{renderRoute()}</Routes>
       </Router>
     </>
   );

@@ -2,7 +2,6 @@ import React from "react";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authenServices } from "../services";
-import { Redirect } from "react-router-dom";
 
 export const signin = createAsyncThunk("user/signin", async (user) => {
   const response = await authenServices.signin(user);

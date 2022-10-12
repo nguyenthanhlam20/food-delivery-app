@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { ROUTES } from "../../../context/routes";
+import { CONSTANT_ROUTE } from "../../../constants";
 
 const PublicNavbar = () => {
   return (
@@ -21,8 +21,8 @@ const PublicNavbar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-          <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+          <Link to={CONSTANT_ROUTE.SIGN_IN}>Sign In</Link>
+          <Link to={CONSTANT_ROUTE.SIGN_UP}>Sign Up</Link>
         </div>
       </div>
     </>
