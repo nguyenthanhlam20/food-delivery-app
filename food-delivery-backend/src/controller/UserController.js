@@ -2,43 +2,45 @@ import DBProvider, { executeQuery, executeNonQuery } from "../dal/DBProvider";
 import jwt from "jsonwebtoken";
 const dbp = DBProvider();
 
-export async function getUser(req, res) {
-  let user = req.body;
-  const queryString = `SELECT * FROM [User] WHERE username = '${user.username}' AND password = '${user.password}'`;
-  const data = await executeQuery(queryString);
+const UserController = {
+  getUser: async (req, res) => {
+    let user = req.body;
+    const queryString = `SELECT * FROM [User] WHERE username = '${user.username}' AND password = '${user.password}'`;
+    const data = await executeQuery(queryString);
 
-  if (data.at(0)) {
-    user = data.at(0);
-    const accessToken = jwt.sign(user, "secretKey", {
-      expiresIn: "20m",
-    });
-    return res.json({ user, accessToken: accessToken });
-  } else {
-    return res.status(401).json("Username or password incorrect");
-  }
-}
+    if (data.at(0)) {
+      user = data.at(0);
+      const accessToken = jwt.sign(user, "secretKey", {
+        expiresIn: "20m",
+      });
+      return res.json({ user, accessToken: accessToken });
+    } else {
+      return res.status(401).json("Username or password incorrect");
+    }
+  },
+  getUsers: async (req, res) => {
+    const queryString = `SELECT * FROM [User]`;
+    const data = await executeQuery(queryString);
 
-export async function getUsers(req, res) {
-  const queryString = `SELECT * FROM [User]`;
-  const data = await executeQuery(queryString);
+    const users = data;
+    // console.log(data);
+    return res.json({ users });
+  },
+  insertUser: async (req, res) => {
+    const user = req.body;
+    const queryString = `INSERT INTO [dbo].[User]
+                          ([username]
+                          ,[password]
+                          ,[email])
+                          VALUES ('${user.username}', 
+                                  '${user.password}',
+                                  '${user.email}')`;
+    const data = await executeNonQuery(queryString);
 
-  const users = data;
-  // console.log(data);
-  return res.json({ users });
-}
+    console.log(data);
 
-export async function insertUser(req, res) {
-  const user = req.body;
-  const queryString = `INSERT INTO [dbo].[User]
-                        ([username]
-                        ,[password]
-                        ,[email])
-                        VALUES ('${user.username}', 
-                                '${user.password}',
-                                '${user.email}')`;
-  const data = await executeNonQuery(queryString);
+    return res.json({ user: user, rowAffected: data.at(0) });
+  },
+};
 
-  console.log(data);
-
-  return res.json({ user: user, rowAffected: data.at(0) });
-}
+export default UserController;

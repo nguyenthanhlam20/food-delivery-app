@@ -7,7 +7,10 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "antd": "^4.23.5",
     "axios": "^1.0.0",
+    "env-cmd": "^10.1.0",
+    "firebase": "^9.12.1",
     "node-sass": "^7.0.3",
     "react": "^18.2.0",
     "react-data-table-component": "^7.5.3",
@@ -26,7 +29,7 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "env-cmd -f ./environments/.env.development react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

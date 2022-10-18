@@ -1,6 +1,15 @@
 import HomePage from "./HomePage";
 import SignInPage from "./SignInPage";
-import UserPage from "./admin/UserPage";
+import ListUserPage from "./admin/ListUserPage";
 import SignUpPage from "./SignUpPage";
+import ListRestaurantPage from "./admin/ListRestaurantPage";
+import ListCategoryPage from "./admin/ListCategoryPage";
 
-export { SignInPage, HomePage, SignUpPage, UserPage };
+export {
+  SignInPage,
+  HomePage,
+  SignUpPage,
+  ListUserPage,
+  ListRestaurantPage,
+  ListCategoryPage,
+};

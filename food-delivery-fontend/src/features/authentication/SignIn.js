@@ -30,12 +30,12 @@ const Container = styled.div`
 `;
 
 const RightComponent = styled.div`
-  width: 45%;
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   justify-items: center;
+  box-sizing: border-box;
   width: 45%;
 `;
 
@@ -46,10 +46,11 @@ const LeftComponent = styled.div`
 const InputGroup = styled.div`
   position: relative;
   margin-bottom: 15px;
+  box-sizing: border-box;
 `;
 
 const InputFeild = styled.input`
-  width: 100%;
+  width: 93%;
   padding: 15px 0px 15px 35px;
   border-radius: 8px;
   border: 2px solid #ccc;

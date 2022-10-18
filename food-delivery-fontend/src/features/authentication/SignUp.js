@@ -10,6 +10,7 @@ import { signup } from "../../redux/authenSlice";
 import styled from "styled-components";
 
 const Container = styled.div`
+  box-sizing: border-box;
   margin: auto;
   display: flex;
   flex-direction: row;
@@ -27,7 +28,7 @@ const Container = styled.div`
 `;
 
 const RightComponent = styled.div`
-  width: 45%;
+  width: 55%;
   padding: 40px;
   display: flex;
   flex-direction: column;
@@ -46,7 +47,8 @@ const InputGroup = styled.div`
 `;
 
 const InputFeild = styled.input`
-  width: 100%;
+  width: 93%;
+
   padding: 15px 0px 15px 35px;
   border-radius: 8px;
   border: 2px solid #ccc;

@@ -1,5 +1,5 @@
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
-import ChangePasword from "./change_password/components/ChangePassword";
+import ChangePasword from "./ChangePassword";
 
 export { SignIn, SignUp, ChangePasword };

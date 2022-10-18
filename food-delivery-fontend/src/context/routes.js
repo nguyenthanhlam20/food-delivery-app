@@ -27,7 +27,19 @@ export const routes = [
   {
     path: CONSTANT_ROUTE.MANAGE_USER,
     isPrivate: false,
-    component: <Pages.UserPage />,
+    component: <Pages.ListUserPage />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.MANAGE_RESTAURANT,
+    isPrivate: false,
+    component: <Pages.ListRestaurantPage />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.MANAGE_CATEGORY,
+    isPrivate: false,
+    component: <Pages.ListCategoryPage />,
     exact: true,
   },
 ];

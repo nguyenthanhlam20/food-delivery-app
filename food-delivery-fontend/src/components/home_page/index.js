@@ -1,5 +1,4 @@
-import PublicHomePage from "./public/PublicHomePage";
-import UserHomePage from "./user/UserHomePage";
-import AdminHomePage from "./admin/AdminHomePage";
+import UserHomePage from "./UserHomePage";
+import AdminHomePage from "./AdminHomePage";
 
-export { PublicHomePage, UserHomePage, AdminHomePage };
+export { UserHomePage, AdminHomePage };

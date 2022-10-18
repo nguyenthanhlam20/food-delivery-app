@@ -1,10 +1,10 @@
 import axios from "axios";
 
-import { USER_API } from "../constants";
+import { API } from "../constants";
 
 const userServices = {
   getUsers: async () => {
-    const response = await axios.get(USER_API.GET_USERS);
+    const response = await axios.get(API.ADMIN.MANAGE_USER.GET_USERS);
     return response.data;
   },
 };

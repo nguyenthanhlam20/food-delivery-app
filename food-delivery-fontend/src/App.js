@@ -1,14 +1,15 @@
 // import './App.css';
 import React from "react";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { UserHeader } from "./components/header";
+import Header from "./layouts/Header";
 
 import { routes } from "./context/routes";
+import Navbar from "./layouts/Navbar";
 
 function App() {
   const renderRoute = () => {
     return routes.map((route) => {
-      // console.log(route);
       return (
         <Route
           key={route.path}
@@ -23,7 +24,8 @@ function App() {
   return (
     <>
       <Router>
-        {/* <UserHeader /> */}
+        <Header />
+        <Navbar />
         <Routes>{renderRoute()}</Routes>
       </Router>
     </>

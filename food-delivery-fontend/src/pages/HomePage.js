@@ -10,7 +10,6 @@ const HomePage = () => {
   const user = useSelector((state) => state.authen.user);
   let homePage;
   if (user?.username) {
-    homePage = <PublicHomePage />;
   } else {
     homePage = <UserHomePage />;
   }
