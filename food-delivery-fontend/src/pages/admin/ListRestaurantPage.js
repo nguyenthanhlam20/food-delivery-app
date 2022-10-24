@@ -6,11 +6,13 @@ import { getRestaurants } from "../../redux/restaurantSlice";
 const ListRestaurantPage = () => {
   const dispatch = useDispatch();
 
-  const restaurants = useSelector((state) => state.restaurant.data);
+  const restaurantState = useSelector((state) => state.restaurant);
+  const restaurants = restaurantState.data;
+  const isRefresh = restaurantState.isRefresh;
 
   React.useEffect(() => {
     dispatch(getRestaurants());
-  }, []);
+  }, [isRefresh]);
 
   return (
     <>

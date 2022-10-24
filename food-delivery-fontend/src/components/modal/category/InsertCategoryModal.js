@@ -11,7 +11,7 @@ import {
   MdUpload,
 } from "react-icons/md";
 
-import FileUpload from "../../../helpers/file-upload";
+import HandleUpload from "../../../firebase/handle-upload";
 
 const { TextArea } = Input;
 
@@ -136,7 +136,7 @@ const InsertCategoryModal = ({ isOpen, setIsOpen }) => {
           />
           {/* <Label>Enter category description</Label> */}
         </InputContainer>
-        <FileUpload setImageUrl={setImageUrl} />
+        <HandleUpload setImageUrl={setImageUrl} />
       </Modal>
     </>
   );

@@ -3,14 +3,16 @@ import { API } from "../constants";
 import axios from "axios";
 
 const restaurantServices = {
-  getRestaurants: async (restaurant) => {
-    // console.log(restaurant);
+  getRestaurants: async () => {
+    console.log(API.ADMIN.MANAGE_RESTAURANT.GET_RESTAURANTS);
     const response = await axios.get(
-      API.ADMIN.MANAGE_RESTAURANT.GET_Restaurants
+      API.ADMIN.MANAGE_RESTAURANT.GET_RESTAURANTS
     );
+    console.log(response.data);
     return response.data;
   },
   insertRestaurant: async (restaurant) => {
+    console.log(API.ADMIN.MANAGE_RESTAURANT.GET_RESTAURANTS);
     const response = await axios.post(
       API.ADMIN.MANAGE_RESTAURANT.INSERT_RESTAURANT,
       restaurant

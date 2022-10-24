@@ -6,7 +6,6 @@ import { async } from "@firebase/util";
 
 export const getRestaurants = createAsyncThunk("restaurant/get", async () => {
   const response = await restaurantServices.getRestaurants();
-  // console.log(response);
   return response;
 });
 

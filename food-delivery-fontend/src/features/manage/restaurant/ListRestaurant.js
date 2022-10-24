@@ -127,9 +127,9 @@ const { confirm } = Modal;
 
 const showDeleteConfirm = (handleDelete, restaurantId) => {
   confirm({
-    title: "Are you sure to delete this Restaurant?",
+    title: "Are you sure to delete this restaurant?",
     // icon: <MdWarning />,
-    content: "All information related to this Restaurant will be deleted",
+    content: "All information related to this restaurant will be deleted",
     okText: "Yes",
     okType: "danger",
     cancelText: "No",
@@ -217,17 +217,17 @@ export const ListRestaurant = ({ restaurants }) => {
   const columns = [
     {
       name: "Restaurant Name",
-      selector: (row) => row.Restaurant_name,
+      selector: (row) => row.restaurant_name,
+      sortable: true,
+    },
+    {
+      name: "Address",
+      selector: (row) => row.address,
       sortable: true,
     },
     {
       name: "Description",
       selector: (row) => row.description,
-      sortable: true,
-    },
-    {
-      name: "Number of Food",
-      selector: (row) => row.number_of_food,
       sortable: true,
     },
     {
@@ -252,7 +252,7 @@ export const ListRestaurant = ({ restaurants }) => {
           </StyledButton>
 
           <StyledButton
-            onClick={() => showDeleteConfirm(handleDelete, row.Restaurant_id)}
+            onClick={() => showDeleteConfirm(handleDelete, row.restaurant_id)}
             type="primary"
             icon={<MdOutlineDriveFileRenameOutline />}
           >
