@@ -6,44 +6,99 @@ import { Button, message, Progress, Upload } from "antd";
 import ImgCrop from "antd-img-crop";
 import handleUpload from "../../firebase/handle-upload";
 import handleDelete from "../../firebase/handle-delete";
+import { LIST_IGNORE } from "antd/lib/upload/Upload";
 
 const props = {};
 
+const Header = styled.header`
+  position: absolute;
+  left: 20px;
+  top: -12px;
+  background-color: #fff;
+  text-transform: capitalize;
+  font-weight: 400;
+`;
+const Wrapper = styled.div`
+  border: 1px solid #ccc;
+  padding: 20px;
+  position: relative;
+`;
+
 const FileUploader = () => {
   const [fileList, setFileList] = useState([]);
+  // const [urlList, ]
   const [percent, setPercent] = useState(0);
+  const [uploadedFile, setUploadedFile] = React.useState([]);
 
   const onChange = (info) => {
+    console.log(info.fileList);
     setFileList(info.fileList);
-    // console.log(info);
-    if (info.file.status !== "uploading") {
-      console.log(info.file, info.fileList);
+    if (info.file.status === "uploading") {
+      console.log("file is uploading");
     }
     if (info.file.status === "done") {
+      console.log(fileList);
+      // console.log("infoooo", info.file);
+      console.log("file uploaded successful");
       message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === "error") {
       message.error(`${info.file.name} file upload failed.`);
+      console.log("file uploaded error");
     }
   };
-  console.log(percent);
+  const uploadImage = (options) => {
+    const { onSuccess, onError, file, onProgress } = options;
+
+    const response = handleUpload({
+      file: file,
+      setPercent: setPercent,
+      firebaseFolderName: "restaurant-image",
+      onProgress: onProgress,
+      onSuccess: onSuccess,
+    });
+
+    console.log("response", response);
+
+    setUploadedFile(uploadedFile.push(response));
+    console.log(uploadedFile);
+  };
 
   return (
     <>
-      <Upload
-        customRequest={(info) =>
-          handleUpload({
-            file: info.file,
-            setPercent: setPercent,
-            firebaseFolderName: "restaurant-image",
-          })
-        }
-        progress={{ strokeWidth: 2, showInfo: false }}
-        onChange={onChange}
-        onRemove={(info) => handleDelete({ fileName: info.fileName })}
-      >
-        <Button icon={<UploadOutlined />}>Click to Upload</Button>
-      </Upload>
-      <Progress percent={percent} />
+      <Wrapper>
+        <Header>Add restaurant images</Header>
+        <Upload
+          // pzrogress={ProgressProps}
+          // data={(file) => (file.status =)}
+          beforeUpload={(file) => {
+            let existFileStatus = false;
+            console.log(fileList);
+            fileList.map((currentFile) => {
+              if (file.name === currentFile.name) {
+                existFileStatus = true;
+              }
+            });
+
+            if (existFileStatus) message.error(`File is already exist`);
+
+            return !existFileStatus;
+          }}
+          fileList={fileList}
+          customRequest={uploadImage}
+          onChange={onChange}
+          onRemove={(file) => {
+            // console.log(fileList);
+
+            handleDelete({
+              firebaseFolderName: "restaurant-image",
+              fileName: file.name,
+            });
+          }}
+        >
+          <Button icon={<UploadOutlined />}>Click to Upload</Button>
+        </Upload>
+        {/* {fileList.length > 0 ? <Progress percent={percent} /> : null} */}
+      </Wrapper>
     </>
   );
 };

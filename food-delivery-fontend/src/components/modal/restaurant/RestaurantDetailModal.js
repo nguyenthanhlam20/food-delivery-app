@@ -74,6 +74,8 @@ const LeftComponents = styled.div`
 
 const RightComponent = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledModal = styled(Modal)`
@@ -94,6 +96,10 @@ const AddressContainer = styled.div`
   position: relative;
   border: 1px solid #ccc;
   margin-bottom: 10px;
+`;
+
+const StyledCheckBox = styled(Checkbox)`
+  margin-bottom: 15px;
 `;
 
 const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
@@ -314,12 +320,12 @@ const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
           </AddressContainer>
         </LeftComponents>
         <RightComponent>
-          <Checkbox
+          <StyledCheckBox
             checked={isActive}
             onChange={() => setIsActive((isActive) => !isActive)}
           >
             {isActive ? "Active" : "Not Active"}
-          </Checkbox>
+          </StyledCheckBox>
           <FileUploader />
         </RightComponent>
       </StyledModal>

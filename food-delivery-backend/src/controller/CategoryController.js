@@ -6,13 +6,11 @@ const CategoryController = {
   getCategories: async (req, res) => {
     const queryString = `select c.category_id, 
                                 c.category_name,
-                                c.img_url,
                                 c.[description],
                                 count(f.food_id) as 'number_of_food'
                         from [category] c left join [food] f on c.category_id = f.category_id
                         group by c.category_id, 
                                 c.category_name,
-                                c.img_url,
                                 c.[description]`;
     const data = await executeQuery(queryString);
 
@@ -25,7 +23,6 @@ const CategoryController = {
     const queryString = `INSERT INTO [dbo].[Category]
                           ([category_name]
                           ,[description]
-                          ,[img_url])
                           VALUES ('${category.category_name}', 
                                   '${category.description}',
                                   '${category.img_url}')`;
@@ -59,7 +56,6 @@ const CategoryController = {
     const queryString = `UPDATE [dbo].[Category]
                   SET [category_name] = '${category.category_name}'
                      ,[description] =  '${category.description}'
-                    ,[img_url] = '${category.img_url}'
                   WHERE [category_id] =  ${category.category_id}`;
 
     const data = await executeNonQuery(queryString);

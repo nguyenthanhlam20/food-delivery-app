@@ -1,20 +1,17 @@
 import storage from "./firebase-config";
 import { ref, deleteObject } from "firebase/storage";
 
-// Create a reference to the file to delete
-
 // Delete the file
 
-const handleDelete = ({ fileName }) => {
-  const desertRef = ref(storage, fileName);
-  deleteObject(desertRef)
+const handleDelete = ({ firebaseFolderName, fileName }) => {
+  const desertRef = ref(storage, `${firebaseFolderName}/${fileName}`);
+  deleteObject(desertRef) // .child);
     .then(() => {
-      console.log("delete successfully");
+      console.log("delete file on firebase successfully");
     })
     .catch((error) => {
-      // Uh-oh, an error occurred!
+      console.log("delete file on firebase error", error);
     });
 };
-
 
 export default handleDelete;

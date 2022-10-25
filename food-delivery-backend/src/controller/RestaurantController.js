@@ -18,12 +18,10 @@ const RestaurantController = {
                           ([restaurant_name]
                           ,[address]
                           ,[description]
-                          ,[img_url]
                           ,[is_active])
                           VALUES (N'${restaurant.restaurant_name}', 
                                   N'${restaurant.address}',
                                   N'${restaurant.description}',
-                                  '${restaurant.img_url}',
                                   '${restaurant.is_active}')`;
     const data = await executeNonQuery(queryString);
 
