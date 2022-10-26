@@ -9,10 +9,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f3f4f5;
+  background-color: #fbf8ee;
   box-sizing: border-box;
   left: 0; right: 0;
-  width: 100%;
+  width: 100vw;
+  max-width: 100%;
+  /* scrollbar-gutter: stable both-edges; */
 }
 
 code {

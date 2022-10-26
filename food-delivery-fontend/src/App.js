@@ -6,6 +6,21 @@ import Header from "./layouts/Header";
 
 import { routes } from "./context/routes";
 import Navbar from "./layouts/Navbar";
+import styled from "styled-components";
+
+const OuterWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  max-width: 100%;
+`;
+const InnerWrapper = styled.div`
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 function App() {
   const renderRoute = () => {
@@ -24,9 +39,13 @@ function App() {
   return (
     <>
       <Router>
-        <Header />
-        <Navbar />
-        <Routes>{renderRoute()}</Routes>
+        <OuterWrapper>
+          <Navbar />
+          <InnerWrapper>
+            <Header />
+            <Routes>{renderRoute()}</Routes>
+          </InnerWrapper>
+        </OuterWrapper>
       </Router>
     </>
   );

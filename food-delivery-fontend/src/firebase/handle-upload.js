@@ -30,15 +30,14 @@ const handleUpload = ({
           onSuccess("Ok");
         }
       },
-      (err) => console.log(err),
-      () => {
-        // download url
-        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
-          return { url: url, fileName: file.name };
-        });
-      }
+      (err) => console.log(err)
     );
+
+    // download url
+    const response = getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+      return { url: url, fileName: file.name, status: "done" };
+    });
+    return response;
   }
 };
 

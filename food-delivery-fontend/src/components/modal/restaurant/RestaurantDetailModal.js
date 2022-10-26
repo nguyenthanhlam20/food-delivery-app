@@ -106,12 +106,16 @@ const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
   const [restaurantName, setRestaurantName] = React.useState(
     currentRestaurant?.restaurant_name
   );
+
+  // console.log("ok");
+
+  const [restaurantImages, setRestaurantImages] = React.useState([]);
+
   const [address, setAddress] = React.useState(currentRestaurant?.address);
   const [isActive, setIsActive] = React.useState(currentRestaurant?.is_active);
   const [description, setDescription] = React.useState(
     currentRestaurant?.description
   );
-  const [imageUrl, setImageUrl] = React.useState(currentRestaurant?.img_url);
 
   const [selectedCity, setSelectedCity] = React.useState(null);
   const [selectedDistrict, setSelectedDistrict] = React.useState(null);
@@ -122,6 +126,8 @@ const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
   const [wards, setWards] = React.useState([]);
 
   const dispatch = useDispatch();
+
+  // console.log("uploaded images", restaurantImages);
 
   React.useEffect(() => {
     setCities(getCities());
@@ -137,17 +143,17 @@ const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
         restaurant_name: restaurantName,
         address: address,
         description: description,
-        image_url: imageUrl,
+        images: restaurantImages,
         is_active: isActive,
       })
     );
-    setRestaurantName("");
-    setDescription("");
-    setImageUrl("");
-    setIsOpen(false);
+    handleCancel();
   };
 
   const handleCancel = () => {
+    setRestaurantName("");
+    setDescription("");
+    setRestaurantImages([]);
     setIsOpen(false);
   };
 
@@ -326,7 +332,10 @@ const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
           >
             {isActive ? "Active" : "Not Active"}
           </StyledCheckBox>
-          <FileUploader />
+          <FileUploader
+            images={restaurantImages}
+            setImages={setRestaurantImages}
+          />
         </RightComponent>
       </StyledModal>
     </>

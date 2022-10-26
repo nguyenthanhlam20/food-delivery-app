@@ -31,14 +31,14 @@ const Wrapper = styled.div`
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0px 5px 8px 0px #ccc;
-  // width: 100%;
+  // width: 80%;
 `;
 
 const Title = styled.h2`
   padding: 10px 0px 0px 20px;
 `;
 
-const StyledDataTable = styled(DataTable)`
+const StyledTable = styled(Table)`
   // border: 1px solid #000;
   margin: 0px;
   width: 100%;
@@ -216,24 +216,25 @@ export const ListRestaurant = ({ restaurants }) => {
 
   const columns = [
     {
-      name: "Restaurant Name",
-      selector: (row) => row.restaurant_name,
-      sortable: true,
+      title: "Restaurant Name",
+      dataIndex: "restaurant_name",
+      sorter: (a, b) => a === b,
+      width: "20%",
     },
     {
-      name: "Address",
-      selector: (row) => row.address,
-      sortable: true,
+      title: "Address",
+      dataIndex: "address",
+      sorter: (a, b) => a === b,
     },
     {
-      name: "Description",
-      selector: (row) => row.description,
-      sortable: true,
+      title: "Description",
+      dataIndex: "description",
+      sorter: (a, b) => a === b,
     },
     {
-      name: "Actions",
-      button: true,
-      cell: (row) => (
+      title: "Actions",
+      dataIndex: "",
+      render: (row) => (
         <>
           <StyledButton
             type="primary"
@@ -272,30 +273,25 @@ export const ListRestaurant = ({ restaurants }) => {
   const ExpandedComponent = ({ data }) => (
     <pre>{JSON.stringify(data, null, 2)}</pre>
   );
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log("params", pagination, filters, sorter, extra);
+  };
   return (
     <>
       <Wrapper>
-        <RestaurantDetailModal
-          isOpen={isOpenModal}
-          setIsOpen={setIsOpenModal}
-          currentRestaurant={currentRestaurant}
-        />
+        {isOpenModal == true ? (
+          <RestaurantDetailModal
+            isOpen={isOpenModal}
+            setIsOpen={setIsOpenModal}
+            currentRestaurant={currentRestaurant}
+          />
+        ) : null}
         <Title>List Restaurant</Title>
-        <StyledDataTable
+        <StyledTable
           columns={columns}
-          data={data}
-          selectableRows
-          selectableRowsHighlight
-          pagination
-          fixedHeaderScrollHeight={"500px"}
-          // fixedHeader
-          striped
-          highlightOnHover
-          pointerOnHover
-          expandableRowsComponent={ExpandedComponent}
-          subHeader
-          subHeaderAlign={"left"}
-          subHeaderComponent={subHeaderComponentMemo}
+          dataSource={restaurants}
+          onChange={onChange}
         />
       </Wrapper>
     </>

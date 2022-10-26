@@ -14,7 +14,7 @@ const RestaurantController = {
   insertRestaurant: async (req, res) => {
     const restaurant = req.body;
     console.log(restaurant);
-    const queryString = `INSERT INTO [dbo].[restaurant]
+    let queryString = `INSERT INTO [dbo].[restaurant]
                           ([restaurant_name]
                           ,[address]
                           ,[description]
@@ -24,6 +24,32 @@ const RestaurantController = {
                                   N'${restaurant.description}',
                                   '${restaurant.is_active}')`;
     const data = await executeNonQuery(queryString);
+
+    const images = restaurant.images;
+
+    images.map((image) => {
+      const status = image.status == "done" ? 1 : 0;
+
+      queryString = `INSERT INTO [dbo].[Image]
+                      ([image_name]
+                      ,[url]
+                      ,[status])
+                      VALUES
+                      ('${image.fileName}',
+                        '${image.url}', 
+                        '${status}')`;
+      executeNonQuery(queryString);
+
+      queryString = `INSERT INTO [dbo].[Restaurant_Image]
+                        ([restaurant_id]
+                         ,[image_id])
+                    VALUES
+                      ((SELECT IDENT_CURRENT('Restaurant')),(SELECT IDENT_CURRENT('Image')))`;
+
+      executeNonQuery(queryString);
+    });
+
+    console.log("data", data);
 
     return res.json({ restaurant: restaurant, rowAffected: data.at(0) });
   },

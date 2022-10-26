@@ -10,7 +10,7 @@ import {
 
 const Links = [
   {
-    name: "Home",
+    name: "Dashboard",
     icon: <MdHome />,
     role: ROLE.EVERYONE,
     path: CONSTANT_ROUTE.HOME_PAGE,

@@ -24,21 +24,17 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const FileUploader = () => {
+const FileUploader = ({ images, setImages }) => {
   const [fileList, setFileList] = useState([]);
-  // const [urlList, ]
   const [percent, setPercent] = useState(0);
-  const [uploadedFile, setUploadedFile] = React.useState([]);
 
   const onChange = (info) => {
-    console.log(info.fileList);
+    // console.log(info.fileList);
     setFileList(info.fileList);
     if (info.file.status === "uploading") {
       console.log("file is uploading");
     }
     if (info.file.status === "done") {
-      console.log(fileList);
-      // console.log("infoooo", info.file);
       console.log("file uploaded successful");
       message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === "error") {
@@ -57,10 +53,12 @@ const FileUploader = () => {
       onSuccess: onSuccess,
     });
 
-    console.log("response", response);
-
-    setUploadedFile(uploadedFile.push(response));
-    console.log(uploadedFile);
+    response.then((result) => {
+      const imagesClone = images.slice();
+      imagesClone.push(result);
+      console.log("upload image response", imagesClone);
+      setImages(imagesClone);
+    });
   };
 
   return (
@@ -68,11 +66,9 @@ const FileUploader = () => {
       <Wrapper>
         <Header>Add restaurant images</Header>
         <Upload
-          // pzrogress={ProgressProps}
           // data={(file) => (file.status =)}
           beforeUpload={(file) => {
             let existFileStatus = false;
-            console.log(fileList);
             fileList.map((currentFile) => {
               if (file.name === currentFile.name) {
                 existFileStatus = true;
