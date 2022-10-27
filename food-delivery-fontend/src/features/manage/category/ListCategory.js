@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import DataTable from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, Input, Tooltip, Popconfirm, Table } from "antd";
-import UpdateCategoryModal from "../../../components/modal/category/UpdateCategoryModal";
+import CategoryDetailModal from "../../../components/modal/category/CategoryDetailModal";
 
 import {
   getCategories,
   insertCategory,
+  getCategoryImages,
   deleteCategory,
 } from "../../../redux/categorySlice";
 
@@ -19,7 +19,6 @@ import {
   MdOutlineInfo,
   MdWarning,
 } from "react-icons/md";
-import InsertCategoryModal from "../../../components/modal/category/InsertCategoryModal";
 
 const { Search } = Input;
 
@@ -32,17 +31,18 @@ const Wrapper = styled.div`
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0px 5px 8px 0px #ccc;
-  // width: 100%;
+  // width: 80%;
 `;
 
 const Title = styled.h2`
   padding: 10px 0px 0px 20px;
 `;
 
-const StyledDataTable = styled(DataTable)`
+const StyledTable = styled(Table)`
   // border: 1px solid #000;
   margin: 0px;
-  width: 100%;
+  border-radius: 10px;
+  // width: 100%;
 `;
 
 const Label = styled.label``;
@@ -101,6 +101,7 @@ const TextField = styled.input`
   border-bottom-right-radius: 0;
   border: 1px solid #ccc;
   padding: 0 32px 0 16px;
+  border-radius: 10px;
 
   &:hover {
     cursor: pointer;
@@ -113,10 +114,15 @@ const SubHeaderWrapper = styled.div`
   // justify-items: space-between;
   justify-content: space-between;
   width: 100%;
+  padding: 20px 10px 10px 10px;
 `;
 
 const Filter = styled.div`
   // width: 100%;
+`;
+
+const StyledInput = styled(Input)`
+  border-radius: 10px;
 `;
 
 const AddButton = styled.div`
@@ -126,16 +132,17 @@ const AddButton = styled.div`
 
 const { confirm } = Modal;
 
-const showDeleteConfirm = (dispatch, categoryId) => {
+const showDeleteConfirm = (handleDelete, categoryId) => {
+  // console.log(categoryId);
   confirm({
-    title: "Are you sure to delete this category?",
+    title: "Are you sure to delete this restaurant?",
     // icon: <MdWarning />,
-    content: "All information related to this category will be deleted",
+    content: "All information related to this restaurant will be deleted",
     okText: "Yes",
     okType: "danger",
     cancelText: "No",
     onOk() {
-      handleDelete(dispatch, categoryId);
+      handleDelete(categoryId);
     },
     onCancel() {
       console.log("Cancel");
@@ -144,17 +151,16 @@ const showDeleteConfirm = (dispatch, categoryId) => {
 };
 
 const SubHeaderComponent = ({
-  filterText,
-  onFilter,
-  onClear,
-  setIsOpenInsertModal,
+  // onFilter,
+  setIsOpenModal,
+  setCurrentCategory,
 }) => (
   <SubHeaderWrapper>
     <Filter>
-      <Input
+      <StyledInput
         placeholder="Search Category"
         allowClear
-        onChange={onFilter}
+        // onChange={onFilter}
         id="search"
         prefix={<MdSearch />}
         suffix={
@@ -168,7 +174,8 @@ const SubHeaderComponent = ({
     <StyledButton
       type="primary"
       onClick={() => {
-        setIsOpenInsertModal(true);
+        setIsOpenModal(true);
+        setCurrentCategory(null);
       }}
       icon={<MdAddCircle />}
     >
@@ -177,77 +184,72 @@ const SubHeaderComponent = ({
   </SubHeaderWrapper>
 );
 
-const handleDelete = (dispatch, categoryId) => {
-  dispatch(deleteCategory({ categoryId: categoryId }));
-};
-
 export const ListCategory = ({ categories }) => {
-  // console.log(list categories: categories);
+  // console.log("list categories: ", categories);
   const dispatch = useDispatch();
-  const [isOpenInsertModal, setIsOpenInsertModal] = React.useState(false);
-  const [isOpenEditModal, setIsOpenEditModal] = React.useState(false);
+  // const categoryState = useSelector((state) => state.category);
+  const [isOpenModal, setIsOpenModal] = React.useState(false);
 
-  const [currentCategory, setCurrentCategory] = React.useState(null);
+  const [currentCategory, setCurrentCategory] = React.useState();
 
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
 
-  const filteredItems = categories.filter(
+  const filteredItems = categories?.filter(
     (item) =>
       item.category_name &&
       item.category_name.toLowerCase().includes(filterText.toLowerCase())
   );
 
-  const subHeaderComponentMemo = React.useMemo(() => {
-    const handleClear = () => {
-      if (filterText) {
-        setResetPaginationToggle(!resetPaginationToggle);
-        setFilterText("");
-      }
-    };
-
-    return (
-      <SubHeaderComponent
-        onFilter={(e) => setFilterText(e.target.value)}
-        onClear={handleClear}
-        filterText={filterText}
-        setIsOpenInsertModal={setIsOpenInsertModal}
-      />
-    );
-  }, [filterText, resetPaginationToggle]);
-
   const columns = [
     {
-      name: "Category Name",
-      selector: (row) => row.category_name,
-      sortable: true,
+      title: "Category Name",
+      dataIndex: "category_name",
+
+      sorter: (a, b) => {
+        if (a.category_name > b.category_name) return 1;
+        else if (a.category_name < b.category_name) return -1;
+        else return 0;
+      },
+      width: "20%",
     },
     {
-      name: "Description",
-      selector: (row) => row.description,
-      sortable: true,
+      title: "Number of food",
+      dataIndex: "number_of_food",
+      sorter: (a, b) => {
+        if (a.number_of_food > b.number_of_food) return 1;
+        else if (a.number_of_food < b.number_of_food) return -1;
+        else return 0;
+      },
     },
     {
-      name: "Number of Food",
-      selector: (row) => row.number_of_food,
-      sortable: true,
+      title: "Description",
+      dataIndex: "description",
+      sorter: (a, b) => {
+        if (a.description > b.description) return 1;
+        else if (a.description < b.description) return -1;
+        else return 0;
+      },
     },
     {
-      name: "Actions",
-      button: true,
-      cell: (row) => (
+      title: "Actions",
+      dataIndex: "",
+      render: (row) => (
         <>
           <StyledButton
             type="primary"
             icon={<MdOutlineDriveFileRenameOutline />}
             onClick={() => {
-              setIsOpenEditModal(true);
+              const images = [];
+              // console.log("category images", images);
+              setIsOpenModal(true);
               setCurrentCategory({
                 category_id: row.category_id,
                 category_name: row.category_name,
+                is_active: row.is_active,
                 description: row.description,
-                image_url: row.image_url,
+                images: images,
               });
             }}
           >
@@ -255,7 +257,7 @@ export const ListCategory = ({ categories }) => {
           </StyledButton>
 
           <StyledButton
-            onClick={() => showDeleteConfirm(dispatch, row.category_id)}
+            onClick={() => showDeleteConfirm(handleDelete, row.category_id)}
             type="primary"
             icon={<MdOutlineDriveFileRenameOutline />}
           >
@@ -267,38 +269,43 @@ export const ListCategory = ({ categories }) => {
     },
   ];
 
+  const handleDelete = (categoryId) => {
+    dispatch(deleteCategory({ categoryId: categoryId }));
+  };
+
   const data = filteredItems;
   const ExpandedComponent = ({ data }) => (
     <pre>{JSON.stringify(data, null, 2)}</pre>
   );
+
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log("params", pagination, filters, sorter, extra);
+  };
   return (
     <>
       <Wrapper>
-        <InsertCategoryModal
-          isOpen={isOpenInsertModal}
-          setIsOpen={setIsOpenInsertModal}
+        {isOpenModal == true ? (
+          <CategoryDetailModal
+            isOpen={isOpenModal}
+            setIsOpen={setIsOpenModal}
+            currentCategory={currentCategory}
+          />
+        ) : null}
+
+        <SubHeaderComponent
+          // onFilter={onFilter}
+          setIsOpenModal={setIsOpenModal}
+          setCurrentCategory={setCurrentCategory}
         />
-        <UpdateCategoryModal
-          isOpen={isOpenEditModal}
-          setIsOpen={setIsOpenEditModal}
-          currentCategory={currentCategory}
-        />
-        <Title>List Category</Title>
-        <StyledDataTable
+        {/* <Title>List Restaurant</Title> */}
+        <StyledTable
+          rowKey={"category_id"}
           columns={columns}
-          data={data}
-          selectableRows
-          selectableRowsHighlight
-          pagination
-          fixedHeaderScrollHeight={"500px"}
-          // fixedHeader
-          striped
-          highlightOnHover
-          pointerOnHover
-          expandableRowsComponent={ExpandedComponent}
-          subHeader
-          subHeaderAlign={"left"}
-          subHeaderComponent={subHeaderComponentMemo}
+          dataSource={filteredItems}
+          onChange={onChange}
+          scroll={{
+            y: 400,
+          }}
         />
       </Wrapper>
     </>

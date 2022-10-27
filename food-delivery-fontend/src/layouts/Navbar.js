@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ROLE, Links } from "../constants";
+import logo from "./../assets/images/logo.png";
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -14,7 +15,7 @@ const Wrapper = styled.div`
 
   //   width: 100%;
   background: #ffffff;
-  box-shadow: 2px 2px 2px 2px solid rgba(100, 100, 255, 0.1);
+  box-shadow: 2px 2px 2px solid #ccc;
   // border-right: 1px solid rgba(100, 100, 255, 0.1);
 `;
 
@@ -28,6 +29,8 @@ const NavbarList = styled.ul`
   justify-item: flex-start;
   margin: 0px;
   padding: 0px;
+  padding-top: 10px;
+  border-top: 2px solid #fbf8ee;
 `;
 const Label = styled.label`
   text-decoration: none;
@@ -37,13 +40,7 @@ const IconContainer = styled.div`
   margin-right: 10px;
   font-size: 25px;
 
-  color: #f49249;
-`;
-
-const NavbarItemContainer = styled.div`
-  padding: 0px 20px;
-  margin-bottom: 10px;
-  border-left: ${(props) => props.borderHighlight};
+  color: ${(props) => props.color};
 `;
 const NavbarItem = styled.li`
   padding: 3px 20px;
@@ -60,24 +57,41 @@ const NavbarItem = styled.li`
   background-color: ${(props) => props.backgroundColor};
   color: ${(props) => props.textColor};
   box-shadow: ${(props) => props.boxShadow};
+`;
+const NavbarItemContainer = styled.div`
+  padding: 0px 20px;
+  margin-bottom: 10px;
+  border-left: ${(props) => props.borderHighlight};
 
   &:hover {
-    ${NavbarItemContainer} {
-      border-left: 5px solid #ef8035;
+    border-left: 5px solid #40a9ff;
+    color: #fff;
+
+    ${IconContainer} {
+      color: #fff;
     }
 
-    background-color: #fbe9cf;
-
-    box-shadow: 0px 2px 2px 1px rgba(58, 53, 65, 0.1);
+    ${NavbarItem} {
+      box-shadow: 0px 2px 2px 1px rgba(58, 53, 65, 0.1);
+      background-color: #40a9ff;
+      color: #fff;
+    }
   }
 `;
 
-const Logo = styled.div`
+const LogoContainer = styled.div`
   box-sizing: border-box;
   width: 220px;
   height: 60px;
-  margin-bottom: 10px;
-  // border-bottom: 1px solid #ccc;
+  // margin-bottom: 10px;
+  padding-left: 50px;
+  padding-top: 5px;
+`;
+
+const LogoImage = styled.img`
+  width: 100px;
+  height: 50px;
+  margin: auto;
 `;
 
 const Navbar = () => {
@@ -93,12 +107,12 @@ const Navbar = () => {
           <NavbarItemContainer
             key={link.path}
             borderHighlight={
-              currentPage === link.name ? "5px solid #ef8035" : "5px solid #fff"
+              currentPage === link.name ? "5px solid #40a9ff" : "5px solid #fff"
             }
           >
             <NavbarItem
-              backgroundColor={currentPage === link.name ? "#fbe9cf" : "#fff"}
-              textColor={currentPage === link.name ? "#f49249" : "#000"}
+              backgroundColor={currentPage === link.name ? "#40a9ff" : "#fff"}
+              textColor={currentPage === link.name ? "#fff" : "#000"}
               boxShadow={
                 currentPage === link.name
                   ? "0px 2px 2px 1px rgba(58, 53, 65, 0.1)"
@@ -109,7 +123,11 @@ const Navbar = () => {
                 localStorage.setItem("currentPage", link.name);
               }}
             >
-              <IconContainer>{link.icon}</IconContainer>
+              <IconContainer
+                color={currentPage === link.name ? "#fff" : "#40a9ff"}
+              >
+                {link.icon}
+              </IconContainer>
               <Label>{link.name}</Label>
             </NavbarItem>
           </NavbarItemContainer>
@@ -121,7 +139,9 @@ const Navbar = () => {
   return (
     <>
       <Wrapper>
-        <Logo></Logo>
+        <LogoContainer>
+          <LogoImage src={logo} />
+        </LogoContainer>
         <NavbarList>{renderLinks()}</NavbarList>
       </Wrapper>
     </>

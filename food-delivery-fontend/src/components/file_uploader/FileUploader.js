@@ -20,6 +20,7 @@ const Header = styled.header`
 `;
 const Wrapper = styled.div`
   border: 1px solid #ccc;
+  border-radius: 13px;
   padding: 20px;
   position: relative;
 `;
@@ -64,7 +65,7 @@ const FileUploader = ({ images, setImages }) => {
   return (
     <>
       <Wrapper>
-        <Header>Add restaurant images</Header>
+        <Header>Add images</Header>
         <Upload
           // data={(file) => (file.status =)}
           beforeUpload={(file) => {

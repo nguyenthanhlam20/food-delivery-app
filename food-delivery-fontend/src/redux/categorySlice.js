@@ -10,10 +10,19 @@ export const getCategories = createAsyncThunk("category/get", async () => {
   return response;
 });
 
+export const getCategoryImages = createAsyncThunk(
+  "category/get/images",
+  async (categoryId) => {
+    // console.log(categoryId);
+    const response = await categoryService.getCategoryImages(categoryId);
+    return response;
+  }
+);
+
 export const insertCategory = createAsyncThunk(
   "category/insert",
   async (category) => {
-    console.log(category);
+    console.log("category being inserted ", category);
     const response = await categoryService.insertCategory(category);
     return response;
   }
@@ -30,6 +39,7 @@ export const updateCategory = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   "category/delete",
   async (categoryId) => {
+    console.log(categoryId);
     const response = await categoryService.deleteCategory(categoryId);
     return response;
   }
@@ -39,6 +49,7 @@ const categorySlice = createSlice({
   name: "category",
   initialState: {
     data: [],
+    images: [],
     isRefresh: false,
   },
   reducers: {},
@@ -47,6 +58,11 @@ const categorySlice = createSlice({
       .addCase(getCategories.fulfilled, (state, action) => {
         state.data = action.payload;
         state.isRefresh = false;
+        console.log("Get categories successfully", state.data);
+      })
+      .addCase(getCategoryImages.fulfilled, (state, action) => {
+        state.images = action.payload;
+        console.log("Get category images successfully", state.images);
       })
       .addCase(insertCategory.fulfilled, (state, action) => {
         if (action.payload.rowAffected == 1) {

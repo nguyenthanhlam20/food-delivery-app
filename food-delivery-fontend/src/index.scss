@@ -1,5 +1,8 @@
 @import "antd/dist/antd.css";
 
+@import "style/override-ant-design.scss";
+
+@import "style/custom-style.scss";
 
 body {
   margin: 0px;
@@ -11,7 +14,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #fbf8ee;
   box-sizing: border-box;
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   width: 100vw;
   max-width: 100%;
   /* scrollbar-gutter: stable both-edges; */

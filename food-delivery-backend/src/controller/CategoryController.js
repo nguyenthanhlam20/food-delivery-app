@@ -18,15 +18,55 @@ const CategoryController = {
     console.log(req.body);
     return res.json(categories);
   },
+  getCategoryImages: async (req, res) => {
+    const categoryId = req.body.categoryId;
+    console.log(categoryId);
+    const queryString = `select i.image_id, 
+                          i.image_name,
+                          i.url
+                    from [Category_Image] ci join Category c
+                    on ci.category_id = c.category_id join [Image] i
+                    on i.image_id = ci.image_id where c.category_id = ${categoryId}`;
+    const data = await executeQuery(queryString);
+
+    console.log("category images: ", data);
+
+    return res.json({ category_images: data });
+  },
   insertCategory: async (req, res) => {
     const category = req.body;
-    const queryString = `INSERT INTO [dbo].[Category]
+    const categoryImages = category.images;
+    let queryString = `INSERT INTO [dbo].[Category]
                           ([category_name]
-                          ,[description]
-                          VALUES ('${category.category_name}', 
-                                  '${category.description}',
-                                  '${category.img_url}')`;
+                          ,[is_active]
+                          ,[description])
+                          VALUES ('${category.category_name}',
+                                  '${category.is_active}',
+                                  '${category.description}')`;
     const data = await executeNonQuery(queryString);
+
+    categoryImages.map((image) => {
+      const status = image.status == "done" ? 1 : 0;
+
+      queryString = `INSERT INTO [dbo].[Image]
+                      ([image_name]
+                      ,[url]
+                      ,[status])
+                      VALUES
+                      ('${image.fileName}',
+                        '${image.url}', 
+                        '${status}')`;
+      executeNonQuery(queryString);
+      console.log("run here");
+
+      queryString = `INSERT INTO [dbo].[Category_Image]
+                        ([category_id]
+                         ,[image_id])
+                    VALUES
+                      ((SELECT IDENT_CURRENT('Category')),(SELECT IDENT_CURRENT('Image')))`;
+
+      executeNonQuery(queryString);
+    });
 
     console.log(data);
 

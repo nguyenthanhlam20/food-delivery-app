@@ -7,6 +7,17 @@ const categoryService = {
     const response = await axios.get(API.ADMIN.MANAGE_CATEGORY.GET_CATEGORIES);
     return response.data;
   },
+  getCategoryImages: async (categoryId) => {
+    // console.log(API.ADMIN.MANAGE_CATEGORY.GET_CATEGORY_IMAGES);
+
+    const response = await axios.post(
+      API.ADMIN.MANAGE_CATEGORY.GET_CATEGORY_IMAGES,
+      categoryId
+    );
+
+    console.log(response.data);
+    return response.data;
+  },
   insertCategory: async (category) => {
     const response = await axios.post(
       API.ADMIN.MANAGE_CATEGORY.INSERT_CATEGORY,

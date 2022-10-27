@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import DataTable from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, Input, Tooltip, Popconfirm, Table } from "antd";
 import RestaurantDetailModal from "../../../components/modal/restaurant/RestaurantDetailModal";
@@ -41,7 +40,8 @@ const Title = styled.h2`
 const StyledTable = styled(Table)`
   // border: 1px solid #000;
   margin: 0px;
-  width: 100%;
+
+  // width: 100%;
 `;
 
 const Label = styled.label``;
@@ -112,6 +112,7 @@ const SubHeaderWrapper = styled.div`
   // justify-items: space-between;
   justify-content: space-between;
   width: 100%;
+  padding: 20px 10px 10px 10px;
 `;
 
 const Filter = styled.div`
@@ -143,9 +144,7 @@ const showDeleteConfirm = (handleDelete, restaurantId) => {
 };
 
 const SubHeaderComponent = ({
-  filterText,
-  onFilter,
-  onClear,
+  // onFilter,
   setIsOpenModal,
   setCurrentRestaurant,
 }) => (
@@ -154,7 +153,7 @@ const SubHeaderComponent = ({
       <Input
         placeholder="Search Restaurant"
         allowClear
-        onChange={onFilter}
+        // onChange={onFilter}
         id="search"
         prefix={<MdSearch />}
         suffix={
@@ -195,41 +194,34 @@ export const ListRestaurant = ({ restaurants }) => {
       item.restaurant_name.toLowerCase().includes(filterText.toLowerCase())
   );
 
-  const subHeaderComponentMemo = React.useMemo(() => {
-    const handleClear = () => {
-      if (filterText) {
-        setResetPaginationToggle(!resetPaginationToggle);
-        setFilterText("");
-      }
-    };
-
-    return (
-      <SubHeaderComponent
-        onFilter={(e) => setFilterText(e.target.value)}
-        onClear={handleClear}
-        filterText={filterText}
-        setIsOpenModal={setIsOpenModal}
-        setCurrentRestaurant={setCurrentRestaurant}
-      />
-    );
-  }, [filterText, resetPaginationToggle]);
-
   const columns = [
     {
       title: "Restaurant Name",
       dataIndex: "restaurant_name",
-      sorter: (a, b) => a === b,
+      sorter: (a, b) => {
+        if (a.restaurant_name > b.restaurant_name) return 1;
+        else if (a.restaurant_name < b.restaurant_name) return -1;
+        else return 0;
+      },
       width: "20%",
     },
     {
       title: "Address",
       dataIndex: "address",
-      sorter: (a, b) => a === b,
+      sorter: (a, b) => {
+        if (a.address > b.address) return 1;
+        else if (a.address < b.address) return -1;
+        else return 0;
+      },
     },
     {
       title: "Description",
       dataIndex: "description",
-      sorter: (a, b) => a === b,
+      sorter: (a, b) => {
+        if (a.description > b.description) return 1;
+        else if (a.description < b.description) return -1;
+        else return 0;
+      },
     },
     {
       title: "Actions",
@@ -287,11 +279,20 @@ export const ListRestaurant = ({ restaurants }) => {
             currentRestaurant={currentRestaurant}
           />
         ) : null}
-        <Title>List Restaurant</Title>
+
+        <SubHeaderComponent
+          // onFilter={onFilter}
+          setIsOpenModal={setIsOpenModal}
+          setCurrentRestaurant={setCurrentRestaurant}
+        />
+        {/* <Title>List Restaurant</Title> */}
         <StyledTable
           columns={columns}
-          dataSource={restaurants}
+          dataSource={filteredItems}
           onChange={onChange}
+          scroll={{
+            y: 400,
+          }}
         />
       </Wrapper>
     </>

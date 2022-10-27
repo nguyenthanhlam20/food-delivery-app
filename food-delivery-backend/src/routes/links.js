@@ -34,6 +34,11 @@ export const Links = [
     handleAction: CategoryController.getCategories,
   },
   {
+    route: CONSTANT_ROUTE.MANAGE_CATEGORY + "/get/images",
+    method: "post",
+    handleAction: CategoryController.getCategoryImages,
+  },
+  {
     route: CONSTANT_ROUTE.MANAGE_CATEGORY + "/insert",
     method: "post",
     handleAction: CategoryController.insertCategory,
@@ -50,6 +55,11 @@ export const Links = [
   },
   {
     route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/get",
+    method: "get",
+    handleAction: RestaurantController.getRestaurants,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/get/images",
     method: "get",
     handleAction: RestaurantController.getRestaurants,
   },
