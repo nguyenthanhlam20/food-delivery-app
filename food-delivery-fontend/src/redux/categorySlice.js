@@ -31,6 +31,9 @@ export const insertCategory = createAsyncThunk(
 export const updateCategory = createAsyncThunk(
   "category/update",
   async (category) => {
+    console.log("Category is being updated: ", category.category_id);
+    console.log("Old images:", category.old_images);
+    console.log("New images:", category.new_images);
     const response = await categoryService.updateCategory(category);
     return response;
   }
@@ -39,7 +42,7 @@ export const updateCategory = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   "category/delete",
   async (categoryId) => {
-    console.log(categoryId);
+    console.log("Category is being deleted: ", categoryId);
     const response = await categoryService.deleteCategory(categoryId);
     return response;
   }
@@ -61,7 +64,7 @@ const categorySlice = createSlice({
         console.log("Get categories successfully", state.data);
       })
       .addCase(getCategoryImages.fulfilled, (state, action) => {
-        state.images = action.payload;
+        state.images = action.payload.category_images;
         console.log("Get category images successfully", state.images);
       })
       .addCase(insertCategory.fulfilled, (state, action) => {

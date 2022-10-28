@@ -15,7 +15,7 @@ import {
 import FileUploader from "../../file_uploader/FileUploader";
 import getCities from "../../../helpers/get-cities";
 
-import { insertCategory } from "../../../redux/categorySlice";
+import { insertCategory, updateCategory } from "../../../redux/categorySlice";
 import {
   MdCategory,
   MdDescription,
@@ -122,13 +122,20 @@ const StyledCheckBox = styled(Checkbox)`
   margin-bottom: 25px;
 `;
 
-const CategoryDetailModal = ({ isOpen, setIsOpen, currentCategory }) => {
-  // console.log(currentCategory);
+const CategoryDetailModal = ({
+  isOpen,
+  setIsOpen,
+  currentCategory,
+  setCurrentCategory,
+  isInsertCategory,
+  setIsInsertCategory,
+}) => {
+  // console.log("current category", currentCategory);
+
   const [categoryName, setCategoryName] = React.useState(
     currentCategory?.category_name
   );
 
-  const [categoryImages, setCategoryImages] = React.useState([]);
   const [isActive, setIsActive] = React.useState(
     currentCategory?.is_active != null ? currentCategory?.is_active : true
   );
@@ -138,22 +145,38 @@ const CategoryDetailModal = ({ isOpen, setIsOpen, currentCategory }) => {
 
   const dispatch = useDispatch();
 
-  // console.log("uploaded images", categoryImages);
+  const [categoryImages, setCategoryImages] = React.useState(
+    currentCategory?.images
+  );
+  // console.log("category images", categoryImages);
 
   const showModal = () => {
     setIsOpen(true);
   };
 
   const handleSubmit = () => {
-    console.log(categoryImages);
-    dispatch(
-      insertCategory({
-        category_name: categoryName,
-        description: description,
-        images: categoryImages,
-        is_active: isActive,
-      })
-    );
+    // console.log("final category images", categoryImages);
+    if (isInsertCategory) {
+      dispatch(
+        insertCategory({
+          category_name: categoryName,
+          description: description,
+          images: categoryImages,
+          is_active: isActive,
+        })
+      );
+    } else {
+      dispatch(
+        updateCategory({
+          category_id: currentCategory.category_id,
+          category_name: categoryName,
+          description: description,
+          old_images: currentCategory.images,
+          new_images: categoryImages,
+          is_active: isActive,
+        })
+      );
+    }
     handleCancel();
   };
 
@@ -162,6 +185,8 @@ const CategoryDetailModal = ({ isOpen, setIsOpen, currentCategory }) => {
     setDescription("");
     setCategoryImages([]);
     setIsOpen(false);
+    setCurrentCategory(null);
+    setIsInsertCategory(false);
   };
 
   // console.log(cities.length);
@@ -239,7 +264,11 @@ const CategoryDetailModal = ({ isOpen, setIsOpen, currentCategory }) => {
           >
             {isActive ? "Active" : "Not Active"}
           </StyledCheckBox>
-          <FileUploader images={categoryImages} setImages={setCategoryImages} />
+          <FileUploader
+            firebaseFolderName="category-images"
+            fileList={categoryImages}
+            setFileList={setCategoryImages}
+          />
         </RightComponent>
       </StyledModal>
     </>

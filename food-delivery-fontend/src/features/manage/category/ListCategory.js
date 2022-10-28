@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, Input, Tooltip, Popconfirm, Table } from "antd";
 import CategoryDetailModal from "../../../components/modal/category/CategoryDetailModal";
+
+import categoryService from "./../../../services/categoryService";
 
 import {
   getCategories,
@@ -154,6 +156,7 @@ const SubHeaderComponent = ({
   // onFilter,
   setIsOpenModal,
   setCurrentCategory,
+  setIsInsertCategory,
 }) => (
   <SubHeaderWrapper>
     <Filter>
@@ -176,6 +179,7 @@ const SubHeaderComponent = ({
       onClick={() => {
         setIsOpenModal(true);
         setCurrentCategory(null);
+        setIsInsertCategory(true);
       }}
       icon={<MdAddCircle />}
     >
@@ -187,7 +191,6 @@ const SubHeaderComponent = ({
 export const ListCategory = ({ categories }) => {
   // console.log("list categories: ", categories);
   const dispatch = useDispatch();
-  // const categoryState = useSelector((state) => state.category);
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
   const [currentCategory, setCurrentCategory] = React.useState();
@@ -196,11 +199,31 @@ export const ListCategory = ({ categories }) => {
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
 
+  const [isInsertCategory, setIsInsertCategory] = React.useState(false);
+
   const filteredItems = categories?.filter(
     (item) =>
       item.category_name &&
       item.category_name.toLowerCase().includes(filterText.toLowerCase())
   );
+
+  const handleEdit = (row) => {
+    categoryService
+      .getCategoryImages({
+        categoryId: row.category_id,
+      })
+      .then((response) => {
+        setCurrentCategory({
+          category_id: row.category_id,
+          category_name: row.category_name,
+          is_active: row.is_active,
+          description: row.description,
+          images: response.category_images,
+        });
+
+        setIsOpenModal(true);
+      });
+  };
 
   const columns = [
     {
@@ -240,18 +263,7 @@ export const ListCategory = ({ categories }) => {
           <StyledButton
             type="primary"
             icon={<MdOutlineDriveFileRenameOutline />}
-            onClick={() => {
-              const images = [];
-              // console.log("category images", images);
-              setIsOpenModal(true);
-              setCurrentCategory({
-                category_id: row.category_id,
-                category_name: row.category_name,
-                is_active: row.is_active,
-                description: row.description,
-                images: images,
-              });
-            }}
+            onClick={() => handleEdit(row)}
           >
             Edit
           </StyledButton>
@@ -289,6 +301,9 @@ export const ListCategory = ({ categories }) => {
             isOpen={isOpenModal}
             setIsOpen={setIsOpenModal}
             currentCategory={currentCategory}
+            setCurrentCategory={setCurrentCategory}
+            isInsertCategory={isInsertCategory}
+            setIsInsertCategory={setIsInsertCategory}
           />
         ) : null}
 
@@ -296,6 +311,7 @@ export const ListCategory = ({ categories }) => {
           // onFilter={onFilter}
           setIsOpenModal={setIsOpenModal}
           setCurrentCategory={setCurrentCategory}
+          setIsInsertCategory={setIsInsertCategory}
         />
         {/* <Title>List Restaurant</Title> */}
         <StyledTable

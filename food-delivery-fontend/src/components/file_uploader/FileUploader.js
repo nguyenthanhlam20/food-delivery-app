@@ -25,17 +25,34 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const FileUploader = ({ images, setImages }) => {
-  const [fileList, setFileList] = useState([]);
-  const [percent, setPercent] = useState(0);
+const FileUploader = ({ firebaseFolderName, fileList, setFileList }) => {
+  // console.log("default image list", fileList);
+
+  const [currentFile, setCurrentFile] = React.useState(null);
 
   const onChange = (info) => {
-    // console.log(info.fileList);
-    setFileList(info.fileList);
+    let fileCloneList = info.fileList.slice();
+    if (currentFile != null) {
+      fileCloneList = fileCloneList.map((file) => {
+        if (file.name === currentFile.name) {
+          console.log("equal");
+          file.url = currentFile.url;
+        }
+
+        return file;
+      });
+    }
+
+    console.log("FIRST");
+
+    // console.log("file", info.file);
+
+    setFileList(fileCloneList);
     if (info.file.status === "uploading") {
       console.log("file is uploading");
     }
     if (info.file.status === "done") {
+      setCurrentFile(null);
       console.log("file uploaded successful");
       message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === "error") {
@@ -43,23 +60,22 @@ const FileUploader = ({ images, setImages }) => {
       console.log("file uploaded error");
     }
   };
-  const uploadImage = (options) => {
+  const uploadImage = async (options) => {
     const { onSuccess, onError, file, onProgress } = options;
 
-    const response = handleUpload({
+    const response = await handleUpload({
       file: file,
-      setPercent: setPercent,
-      firebaseFolderName: "restaurant-image",
+      // setPercent: setPercent,
+      firebaseFolderName: firebaseFolderName,
       onProgress: onProgress,
       onSuccess: onSuccess,
-    });
+    })
+      .then((fileResult) => {
+        console.log("SECOND");
 
-    response.then((result) => {
-      const imagesClone = images.slice();
-      imagesClone.push(result);
-      console.log("upload image response", imagesClone);
-      setImages(imagesClone);
-    });
+        setCurrentFile(fileResult);
+      })
+      .catch(() => console.log("faffafafaf"));
   };
 
   return (
@@ -67,7 +83,7 @@ const FileUploader = ({ images, setImages }) => {
       <Wrapper>
         <Header>Add images</Header>
         <Upload
-          // data={(file) => (file.status =)}
+          // data={(file) => ((file.status === "done"))}
           beforeUpload={(file) => {
             let existFileStatus = false;
             fileList.map((currentFile) => {
@@ -87,7 +103,7 @@ const FileUploader = ({ images, setImages }) => {
             // console.log(fileList);
 
             handleDelete({
-              firebaseFolderName: "restaurant-image",
+              firebaseFolderName: firebaseFolderName,
               fileName: file.name,
             });
           }}
