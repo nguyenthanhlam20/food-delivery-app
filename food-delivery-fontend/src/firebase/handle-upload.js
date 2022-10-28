@@ -7,9 +7,9 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
-const handleUpload = ({
+const handleUpload = async ({
   file,
-  setPercent,
+  // setPercent,
   firebaseFolderName,
   onProgress,
   onSuccess,
@@ -35,7 +35,7 @@ const handleUpload = ({
 
     // download url
     const response = getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-      return { url: url, fileName: file.name, status: "done" };
+      return { url: url, name: file.name, status: "done" };
     });
     return response;
   }

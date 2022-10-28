@@ -21,8 +21,8 @@ const CategoryController = {
   getCategoryImages: async (req, res) => {
     const categoryId = req.body.categoryId;
     console.log(categoryId);
-    const queryString = `select i.image_id, 
-                          i.image_name,
+    const queryString = `select i.image_id as [uid], 
+                          i.image_name as [name],
                           i.url
                     from [Category_Image] ci join Category c
                     on ci.category_id = c.category_id join [Image] i
@@ -75,10 +75,14 @@ const CategoryController = {
   deleteCategory: async (req, res) => {
     const categoryId = req.body.categoryId;
 
-    console.log(categoryId);
+    console.log("category id being deleted", categoryId);
     let queryString = `select category_id from category where category_name = 'Default Category'`;
 
-    const defaultCategoryId = await executeNonQuery(queryString);
+    const response = await executeQuery(queryString);
+
+    const defaultCategoryId = response.at(0).category_id;
+
+    console.log("default category id", defaultCategoryId);
     queryString = `update food set category_id = ${defaultCategoryId} where category_id = '${categoryId}'`;
 
     await executeNonQuery(queryString);
@@ -91,19 +95,28 @@ const CategoryController = {
     return res.json({ categoryId: categoryId, rowAffected: data.at(0) });
   },
   updateCategory: async (req, res) => {
-    console.log(req.body);
     const category = req.body;
-    const queryString = `UPDATE [dbo].[Category]
+    console.log(req.body);
+    const oldImages = category.old_images;
+    const newImages = category.new_images;
+
+    let queryString = `DELETE * FROM [Category_Image] WHERE category_id = ${category.category_id}`;
+
+    await executeNonQuery(queryString);
+
+    queryString = `DELETE * FROM [Image] i join `;
+
+    queryString = `UPDATE [dbo].[Category]
                   SET [category_name] = '${category.category_name}'
                      ,[description] =  '${category.description}'
                   WHERE [category_id] =  ${category.category_id}`;
 
-    const data = await executeNonQuery(queryString);
+    // const data = await executeNonQuery(queryString);
 
-    return res.json({
-      category_id: category.category_id,
-      rowAffected: data.at(0),
-    });
+    // return res.json({
+    //   category_id: category.category_id,
+    //   rowAffected: data.at(0),
+    // });
   },
 };
 
