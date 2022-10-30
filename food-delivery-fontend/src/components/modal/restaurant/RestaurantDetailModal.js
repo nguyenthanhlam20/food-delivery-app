@@ -9,21 +9,28 @@ import {
   message,
   Upload,
   Select,
+  Form,
   Checkbox,
+  Switch,
 } from "antd";
 
 import FileUploader from "../../file_uploader/FileUploader";
 import getCities from "../../../helpers/get-cities";
 
-import { insertRestaurant } from "../../../redux/restaurantSlice";
+import {
+  insertRestaurant,
+  updateRestaurant,
+} from "../../../redux/restaurantSlice";
 import {
   MdCategory,
   MdDescription,
+  MdInfo,
   MdOutlineInfo,
   MdUpload,
 } from "react-icons/md";
 
 import FileUpload from "../../../firebase/handle-upload";
+import { insertRestaurant } from "../../../redux/restaurantSlice";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -32,121 +39,79 @@ const Label = styled.label`
   padding: 0px 5px;
   pointer-events: none;
   position: absolute;
-  // width: 260px;
   text-align: left;
-  left: 25px;
-  top: 5px;
+  left: 30px;
+  top: 10px;
   transition: 0.2s;
-  opacity: 1;
-  transform: translateY(-70%) translateX(-14px);
   font-size: 15px;
   background: #fff;
+  opacity: 1;
   z-index: 1;
-`;
-
-const InputContainer = styled.div`
-  position: relative;
-  margin-bottom: 20px;
-`;
-
-const StyledInput = styled(Input)`
-  &:hover + ${Label} {
-    opacity: 1;
-    background: #fff;
-    transform: translateY(-70%) translateX(-14px);
-  }
-
-  &:not(:placeholder-shown) + ${Label} {
-    opacity: 1;
-    background: #fff;
-    transform: translateY(-70%) translateX(-14px);
-  }
-  box-shadow: none;
-`;
-
-const StyledTextArea = styled(TextArea)`
-  box-shadow: none;
-`;
-
-const LeftComponents = styled.div`
-  width: 100%;
-`;
-
-const RightComponent = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+  text-transform: capitalize;
 `;
 
 const StyledModal = styled(Modal)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  border-radius: 13px;
 `;
 
-const StyledSelect = styled(Select)`
-  margin-right: 20px;
-`;
+const RestaurantDetailModal = ({
+  isOpen,
+  setIsOpen,
+  currentRestaurant,
+  setCurrentRestaurant,
+  isInsertRestaurant,
+  setIsInsertRestaurant,
+}) => {
+  console.log("current category", currentRestaurant);
 
-const AddressContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  padding: 15px 0px 15px 15px;
-  position: relative;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-`;
-
-const StyledCheckBox = styled(Checkbox)`
-  margin-bottom: 15px;
-`;
-
-const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
   const [restaurantName, setRestaurantName] = React.useState(
     currentRestaurant?.restaurant_name
   );
 
-  // console.log("ok");
-
-  const [restaurantImages, setRestaurantImages] = React.useState([]);
-
   const [address, setAddress] = React.useState(currentRestaurant?.address);
-  const [isActive, setIsActive] = React.useState(currentRestaurant?.is_active);
+
+  const [isActive, setIsActive] = React.useState(
+    currentRestaurant?.is_active != null ? currentRestaurant?.is_active : true
+  );
   const [description, setDescription] = React.useState(
     currentRestaurant?.description
   );
 
-  const [selectedCity, setSelectedCity] = React.useState(null);
-  const [selectedDistrict, setSelectedDistrict] = React.useState(null);
-  const [selectedWard, setSelectedWard] = React.useState("");
-
-  const [cities, setCities] = React.useState([]);
-  const [districts, setDistricts] = React.useState([]);
-  const [wards, setWards] = React.useState([]);
-
   const dispatch = useDispatch();
 
-  // console.log("uploaded images", restaurantImages);
-
-  React.useEffect(() => {
-    setCities(getCities());
-  }, []);
+  const [restaurantImages, setRestaurantImages] = React.useState(
+    currentRestaurant == null ? [] : currentRestaurant.images
+  );
+  // console.log("category images", restaurantImages);
 
   const showModal = () => {
     setIsOpen(true);
   };
 
   const handleSubmit = () => {
-    dispatch(
-      insertRestaurant({
-        restaurant_name: restaurantName,
-        address: address,
-        description: description,
-        images: restaurantImages,
-        is_active: isActive,
-      })
-    );
+    // console.log("final category images", restaurantImages);
+    if (isInsertRestaurant) {
+      dispatch(
+        insertRestaurant({
+          restaurant_name: restaurantName,
+          description: description,
+          address: address,
+          images: restaurantImages,
+          is_active: isActive,
+        })
+      );
+    } else {
+      dispatch(
+        updateRestaurant({
+          restaurant_id: currentRestaurant.restaurant_id,
+          restaurant_name: restaurantName,
+          description: description,
+          old_images: currentRestaurant.images,
+          new_images: restaurantImages,
+          is_active: isActive,
+        })
+      );
+    }
     handleCancel();
   };
 
@@ -155,47 +120,11 @@ const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
     setDescription("");
     setRestaurantImages([]);
     setIsOpen(false);
+    setCurrentRestaurant(null);
+    setIsInsertRestaurant(false);
   };
 
   // console.log(cities.length);
-
-  const renderCity = () => {
-    return cities?.map((city, index) => (
-      <Option key={index} value={city.code}>
-        {city.name}
-      </Option>
-    ));
-  };
-
-  const renderDistrict = () => {
-    if (selectedCity != null) {
-      return districts.map((district, index) => (
-        <Option key={index} value={district.code}>
-          {district.name}
-        </Option>
-      ));
-    }
-  };
-
-  const renderWards = () => {
-    if (selectedDistrict != null) {
-      // console.log(wards);
-      return wards.map((ward, index) => (
-        <Option key={index} value={ward.code}>
-          {ward.name}
-        </Option>
-      ));
-    }
-  };
-
-  useEffect(() => {
-    const city = selectedCity ? cities[selectedCity].name : "";
-    const district = selectedDistrict ? districts[selectedDistrict].name : "";
-    const ward = selectedWard ? wards[selectedWard].name : "";
-
-    setAddress(`${ward}, ${district}, ${city}`);
-  }, [selectedWard, selectedCity, selectedDistrict]);
-
   return (
     <>
       <StyledModal
@@ -225,118 +154,86 @@ const RestaurantDetailModal = ({ isOpen, setIsOpen, currentRestaurant }) => {
           </Button>,
         ]}
       >
-        <LeftComponents>
-          <InputContainer>
-            <StyledInput
+        <Form
+          style={{ width: "100%" }}
+          requiredMark="optional"
+          layout="vertical"
+          onFinish={handleSubmit}
+        >
+          <Form.Item
+            label="Catgory Name"
+            name="restaurant_name"
+            initialValue={restaurantName}
+            rules={[
+              {
+                required: true,
+                message: "Please input restaurant name!",
+              },
+            ]}
+            tooltip={{
+              title: "This is required field",
+              icon: <MdOutlineInfo />,
+            }}
+          >
+            <Input
+              required
               size="large"
               showCount
               maxLength={50}
-              value={restaurantName}
+              // value={restaurantName}
               onChange={(e) => setRestaurantName(e.target.value)}
-              // ref={restaurantNameInput}
-              placeholder="Enter restaurant name"
-              prefix={<MdCategory />}
               suffix={
                 <Tooltip title="Enter food restaurant">
                   <MdOutlineInfo style={{ color: "rgba(0,0,0,.45)" }} />
                 </Tooltip>
               }
             />
-            <Label>Enter restaurant name</Label>
-          </InputContainer>
-
-          <InputContainer>
-            <StyledInput
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+            initialValue={description}
+            tooltip={{
+              title: "This is optional field",
+              icon: <MdOutlineInfo />,
+            }}
+          >
+            <TextArea
               size="large"
               showCount
               maxLength={100}
-              typeof="textarea"
-              // style={{ width: "30%" }}
-              // allowClear
-              value={description}
+              // value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter description"
-              prefix={<MdDescription />}
-              suffix={
-                <Tooltip title="Enter restaurant description">
-                  <MdOutlineInfo style={{ color: "rgba(0,0,0,.45)" }} />
-                </Tooltip>
-              }
+              style={{ height: 120, resize: "none" }}
+              // placeholder="disable resize"
             />
-            <Label>Enter description</Label>
-          </InputContainer>
-          {/* <FileUpload setImageUrl={setImageUrl} /> */}
-          <AddressContainer>
-            <StyledSelect
-              style={{ width: "33%" }}
-              showSearch
-              onChange={(input, option) => {
-                // console.log(option.key);
-                setSelectedCity(option.key);
-                setDistricts(cities[option.key].districts);
-              }}
-              placeholder="Select city"
-              optionFilterProp="children"
-              filterOption={(input, option) => option.children.includes(input)}
-              filterSort={(optionA, optionB) =>
-                optionA.children
-                  .toLowerCase()
-                  .localeCompare(optionB.children.toLowerCase())
-              }
-            >
-              {renderCity()}
-            </StyledSelect>
-            <StyledSelect
-              showSearch
-              style={{ width: "33%" }}
-              onChange={(input, option) => {
-                setSelectedDistrict(option.key);
-                setWards(districts[option.key].wards);
-              }}
-              placeholder="Select districts"
-              optionFilterProp="children"
-              filterOption={(input, option) => option.children.includes(input)}
-              filterSort={(optionA, optionB) =>
-                optionA.children
-                  .toLowerCase()
-                  .localeCompare(optionB.children.toLowerCase())
-              }
-            >
-              {renderDistrict()}
-            </StyledSelect>
-            <StyledSelect
-              showSearch
-              style={{ width: "33%" }}
-              onChange={(input, option) => {
-                // console.log(option.key);
-                setSelectedWard(option.key);
-              }}
-              placeholder="Select wards"
-              optionFilterProp="children"
-              filterOption={(input, option) => option.children.includes(input)}
-              filterSort={(optionA, optionB) =>
-                optionA.children
-                  .toLowerCase()
-                  .localeCompare(optionB.children.toLowerCase())
-              }
-            >
-              {renderWards()}
-            </StyledSelect>
-            <Label>Choose Address</Label>
-          </AddressContainer>
-        </LeftComponents>
-        <RightComponent>
-          <StyledCheckBox
-            checked={isActive}
-            onChange={() => setIsActive((isActive) => !isActive)}
+          </Form.Item>
+          <Form.Item
+            label="Active Status"
+            name="active_status"
+            tooltip={{
+              title: "This is active status of restaurant",
+              icon: <MdOutlineInfo />,
+            }}
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
-            {isActive ? "Active" : "Not Active"}
-          </StyledCheckBox>
-          <FileUploader
-            images={restaurantImages}
-            setImages={setRestaurantImages}
-          />
-        </RightComponent>
+            <Switch
+              checked={isActive}
+              onChange={() => setIsActive((isActive) => !isActive)}
+            />
+          </Form.Item>
+          <Form.Item>
+            <FileUploader
+              firebaseFolderName="restaurant-images"
+              fileList={restaurantImages}
+              setFileList={setRestaurantImages}
+            />
+          </Form.Item>
+        </Form>
       </StyledModal>
     </>
   );

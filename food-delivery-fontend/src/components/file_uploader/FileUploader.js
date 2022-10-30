@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, message, Progress, Upload } from "antd";
+import { Button, Form, message, Progress, Upload } from "antd";
 import ImgCrop from "antd-img-crop";
 import handleUpload from "../../firebase/handle-upload";
 import handleDelete from "../../firebase/handle-delete";
 import { LIST_IGNORE } from "antd/lib/upload/Upload";
+import { MdOutlineInfo } from "react-icons/md";
 
 const props = {};
 
@@ -26,63 +27,62 @@ const Wrapper = styled.div`
 `;
 
 const FileUploader = ({ firebaseFolderName, fileList, setFileList }) => {
-  // console.log("default image list", fileList);
-
   const [currentFile, setCurrentFile] = React.useState(null);
+  // console.log("RE-RENDER FILE UPLOADER");
+  if (currentFile != null) {
+    let fileCloneList = fileList?.slice();
+    fileCloneList[fileCloneList.length - 1].url = currentFile.url;
+    setFileList(fileCloneList);
+    setCurrentFile(null);
+  } else {
+    // console.log("CURRENT FILE IS NULL");
+    // console.log("UPLOADED FILE", fileList);
+  }
 
   const onChange = (info) => {
-    let fileCloneList = info.fileList.slice();
-    if (currentFile != null) {
-      fileCloneList = fileCloneList.map((file) => {
-        if (file.name === currentFile.name) {
-          console.log("equal");
-          file.url = currentFile.url;
-        }
-
-        return file;
-      });
-    }
-
-    console.log("FIRST");
-
-    // console.log("file", info.file);
-
-    setFileList(fileCloneList);
+    setFileList(info.fileList);
     if (info.file.status === "uploading") {
       console.log("file is uploading");
     }
     if (info.file.status === "done") {
-      setCurrentFile(null);
       console.log("file uploaded successful");
       message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
       console.log("file uploaded error");
+      message.error(`${info.file.name} file upload failed.`);
     }
   };
   const uploadImage = async (options) => {
+    // console.log("RUN TO CLICK EVENT", options);
     const { onSuccess, onError, file, onProgress } = options;
 
-    const response = await handleUpload({
+    await handleUpload({
       file: file,
       // setPercent: setPercent,
       firebaseFolderName: firebaseFolderName,
       onProgress: onProgress,
       onSuccess: onSuccess,
-    })
-      .then((fileResult) => {
-        console.log("SECOND");
-
-        setCurrentFile(fileResult);
-      })
-      .catch(() => console.log("faffafafaf"));
+      setCurrentFile: setCurrentFile,
+    });
   };
 
   return (
     <>
-      <Wrapper>
-        <Header>Add images</Header>
+      <Form.Item
+        label="Upload Images"
+        name="image"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+        tooltip={{
+          title: "Upload category images",
+          icon: <MdOutlineInfo />,
+        }}
+      >
         <Upload
+          accept="image/*"
           // data={(file) => ((file.status === "done"))}
           beforeUpload={(file) => {
             let existFileStatus = false;
@@ -110,8 +110,7 @@ const FileUploader = ({ firebaseFolderName, fileList, setFileList }) => {
         >
           <Button icon={<UploadOutlined />}>Click to Upload</Button>
         </Upload>
-        {/* {fileList.length > 0 ? <Progress percent={percent} /> : null} */}
-      </Wrapper>
+      </Form.Item>
     </>
   );
 };

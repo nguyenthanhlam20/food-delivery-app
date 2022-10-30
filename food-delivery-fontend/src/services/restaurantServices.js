@@ -11,6 +11,17 @@ const restaurantServices = {
     // console.log(response.data);
     return response.data;
   },
+  getRestaurantImages: async (restaurantId) => {
+    // console.log(API.ADMIN.MANAGE_Restaurant.GET_Restaurant_IMAGES);
+
+    const response = await axios.post(
+      API.ADMIN.MANAGE_RESTAURANT.GET_RESTAURANT_IMAGES,
+      restaurantId
+    );
+
+    // console.log(response.data);
+    return response.data;
+  },
   insertRestaurant: async (restaurant) => {
     // console.log(API.ADMIN.MANAGE_RESTAURANT.GET_RESTAURANTS);
     const response = await axios.post(

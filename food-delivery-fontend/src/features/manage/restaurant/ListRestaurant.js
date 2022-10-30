@@ -1,14 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, Input, Tooltip, Popconfirm, Table } from "antd";
 import RestaurantDetailModal from "../../../components/modal/restaurant/RestaurantDetailModal";
 
-import {
-  getrestaurants,
-  insertRestaurant,
-  deleteRestaurant,
-} from "../../../redux/restaurantSlice";
+import categoryService from "./../../../services/categoryService";
+
+import { deleteRestaurant } from "../../../redux/restaurantSlice";
 
 import {
   MdOutlineDriveFileRenameOutline,
@@ -18,6 +16,7 @@ import {
   MdOutlineInfo,
   MdWarning,
 } from "react-icons/md";
+import { restaurantServices } from "../../../services";
 
 const { Search } = Input;
 
@@ -33,77 +32,11 @@ const Wrapper = styled.div`
   // width: 80%;
 `;
 
-const Title = styled.h2`
-  padding: 10px 0px 0px 20px;
-`;
-
 const StyledTable = styled(Table)`
   // border: 1px solid #000;
   margin: 0px;
-
+  border-radius: 10px;
   // width: 100%;
-`;
-
-const Label = styled.label``;
-
-const IconContainer = styled.div`
-  display: inline-block;
-  margin-right: 10px;
-  font-size: 15px;
-`;
-
-const ActionWrapper = styled.div`
-  padding: 5px 20px;
-  // width: 50%;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  border-radius: 50px;
-  box-shadow: 0px 4px 6px -4px rgba(58, 53, 65, 0.1),
-    0px 6px 10px -4px rgba(58, 53, 65, 0.08),
-    0px 4px 8px -4px rgba(58, 53, 65, 0.16);
-  &:hover {
-    background: linear-gradient(270deg, #9155fd 0%, #c6a7fe 100%);
-    color: #fff;
-  }
-`;
-
-const ClearButton = styled.button`
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  height: 34px;
-  width: 32px;
-  text-align: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 0px 4px 6px -4px rgba(58, 53, 65, 0.1),
-    0px 6px 10px -4px rgba(58, 53, 65, 0.08),
-    0px 4px 8px -4px rgba(58, 53, 65, 0.16);
-
-  &:hover {
-    background: linear-gradient(270deg, #9155fd 0%, #c6a7fe 100%);
-    color: #fff;
-  }
-`;
-
-const TextField = styled.input`
-  height: 32px;
-  width: 200px;
-  border-radius: 3px;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border: 1px solid #ccc;
-  padding: 0 32px 0 16px;
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 const SubHeaderWrapper = styled.div`
@@ -119,14 +52,14 @@ const Filter = styled.div`
   // width: 100%;
 `;
 
-const AddButton = styled.div`
-  display: flex;
-  flex-direction: row;
+const StyledInput = styled(Input)`
+  border-radius: 10px;
 `;
 
 const { confirm } = Modal;
 
 const showDeleteConfirm = (handleDelete, restaurantId) => {
+  // console.log(restaurantId);
   confirm({
     title: "Are you sure to delete this restaurant?",
     // icon: <MdWarning />,
@@ -147,17 +80,18 @@ const SubHeaderComponent = ({
   // onFilter,
   setIsOpenModal,
   setCurrentRestaurant,
+  setIsInsertRestaurant,
 }) => (
   <SubHeaderWrapper>
     <Filter>
-      <Input
+      <StyledInput
         placeholder="Search Restaurant"
         allowClear
         // onChange={onFilter}
         id="search"
         prefix={<MdSearch />}
         suffix={
-          <Tooltip title="Enter Restaurant name to search">
+          <Tooltip title="Enter restaurant name to search">
             <MdOutlineInfo style={{ color: "rgba(0,0,0,.45)" }} />
           </Tooltip>
         }
@@ -169,6 +103,7 @@ const SubHeaderComponent = ({
       onClick={() => {
         setIsOpenModal(true);
         setCurrentRestaurant(null);
+        setIsInsertRestaurant(true);
       }}
       icon={<MdAddCircle />}
     >
@@ -178,7 +113,7 @@ const SubHeaderComponent = ({
 );
 
 export const ListRestaurant = ({ restaurants }) => {
-  // console.log(list restaurants: restaurants);
+  // console.log("list restaurants: ", restaurants);
   const dispatch = useDispatch();
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
@@ -188,16 +123,38 @@ export const ListRestaurant = ({ restaurants }) => {
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
 
+  const [isInsertRestaurant, setIsInsertRestaurant] = React.useState(false);
+
   const filteredItems = restaurants?.filter(
     (item) =>
       item.restaurant_name &&
       item.restaurant_name.toLowerCase().includes(filterText.toLowerCase())
   );
 
+  const handleEdit = (row) => {
+    restaurantServices
+      .getRestaurantImages({
+        restaurantId: row.restaurant_id,
+      })
+      .then((response) => {
+        setCurrentRestaurant({
+          restaurant_id: row.restaurant_id,
+          restaurant_name: row.restaurant_name,
+          address: row.address,
+          is_active: row.is_active,
+          description: row.description,
+          images: response.restaurant_images,
+        });
+
+        setIsOpenModal(true);
+      });
+  };
+
   const columns = [
     {
       title: "Restaurant Name",
       dataIndex: "restaurant_name",
+
       sorter: (a, b) => {
         if (a.restaurant_name > b.restaurant_name) return 1;
         else if (a.restaurant_name < b.restaurant_name) return -1;
@@ -206,11 +163,11 @@ export const ListRestaurant = ({ restaurants }) => {
       width: "20%",
     },
     {
-      title: "Address",
-      dataIndex: "address",
+      title: "Number of food",
+      dataIndex: "number_of_food",
       sorter: (a, b) => {
-        if (a.address > b.address) return 1;
-        else if (a.address < b.address) return -1;
+        if (a.number_of_food > b.number_of_food) return 1;
+        else if (a.number_of_food < b.number_of_food) return -1;
         else return 0;
       },
     },
@@ -231,15 +188,7 @@ export const ListRestaurant = ({ restaurants }) => {
           <StyledButton
             type="primary"
             icon={<MdOutlineDriveFileRenameOutline />}
-            onClick={() => {
-              setIsOpenModal(true);
-              setCurrentRestaurant({
-                restaurant_id: row.restaurant_id,
-                restaurant_name: row.restaurant_name,
-                description: row.description,
-                image_url: row.image_url,
-              });
-            }}
+            onClick={() => handleEdit(row)}
           >
             Edit
           </StyledButton>
@@ -277,6 +226,9 @@ export const ListRestaurant = ({ restaurants }) => {
             isOpen={isOpenModal}
             setIsOpen={setIsOpenModal}
             currentRestaurant={currentRestaurant}
+            setCurrentRestaurant={setCurrentRestaurant}
+            isInsertRestaurant={isInsertRestaurant}
+            setIsInsertRestaurant={setIsInsertRestaurant}
           />
         ) : null}
 
@@ -284,9 +236,11 @@ export const ListRestaurant = ({ restaurants }) => {
           // onFilter={onFilter}
           setIsOpenModal={setIsOpenModal}
           setCurrentRestaurant={setCurrentRestaurant}
+          setIsInsertRestaurant={setIsInsertRestaurant}
         />
         {/* <Title>List Restaurant</Title> */}
         <StyledTable
+          rowKey={"restaurant_id"}
           columns={columns}
           dataSource={filteredItems}
           onChange={onChange}

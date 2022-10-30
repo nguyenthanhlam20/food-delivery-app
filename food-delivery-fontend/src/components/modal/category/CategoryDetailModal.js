@@ -9,7 +9,9 @@ import {
   message,
   Upload,
   Select,
+  Form,
   Checkbox,
+  Switch,
 } from "antd";
 
 import FileUploader from "../../file_uploader/FileUploader";
@@ -19,6 +21,7 @@ import { insertCategory, updateCategory } from "../../../redux/categorySlice";
 import {
   MdCategory,
   MdDescription,
+  MdInfo,
   MdOutlineInfo,
   MdUpload,
 } from "react-icons/md";
@@ -43,83 +46,8 @@ const Label = styled.label`
   text-transform: capitalize;
 `;
 
-const IconContainer = styled.div`
-  color: #000;
-`;
-
-const InputContainer = styled.div`
-  position: relative;
-  margin-bottom: 20px;
-  &:hover {
-    ${Label} {
-      top: -12px;
-      left: 15px;
-      opacity: 1;
-      // color: #40a9ff;
-      background: #fff;
-    }
-
-    ${IconContainer} {
-      // color: #40a9ff;
-    }
-  }
-`;
-
-const StyledInput = styled(Input)`
-  &:not(:placeholder-shown) + ${Label} {
-    top: -12px;
-    left: 15px;
-    opacity: 1;
-    // color: #40a9ff;
-    background: #fff;
-  }
-  // box-shadow: none;
-`;
-
-const StyledTextArea = styled(TextArea)`
-  box-shadow: none;
-  &:not(:placeholder-shown) + ${Label} {
-    top: -12px;
-    left: 15px;
-    opacity: 1;
-    // color: #40a9ff;
-    background: #fff;
-  }
-`;
-
-const LeftComponents = styled.div`
-  width: 100%;
-`;
-
-const RightComponent = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
 const StyledModal = styled(Modal)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   border-radius: 13px;
-`;
-
-const StyledSelect = styled(Select)`
-  margin-right: 20px;
-`;
-
-const AddressContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  padding: 15px 0px 15px 15px;
-  position: relative;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-`;
-
-const StyledCheckBox = styled(Checkbox)`
-  margin-bottom: 25px;
 `;
 
 const CategoryDetailModal = ({
@@ -130,7 +58,7 @@ const CategoryDetailModal = ({
   isInsertCategory,
   setIsInsertCategory,
 }) => {
-  // console.log("current category", currentCategory);
+  console.log("current category", currentCategory);
 
   const [categoryName, setCategoryName] = React.useState(
     currentCategory?.category_name
@@ -146,7 +74,7 @@ const CategoryDetailModal = ({
   const dispatch = useDispatch();
 
   const [categoryImages, setCategoryImages] = React.useState(
-    currentCategory?.images
+    currentCategory == null ? [] : currentCategory.images
   );
   // console.log("category images", categoryImages);
 
@@ -219,57 +147,86 @@ const CategoryDetailModal = ({
           </Button>,
         ]}
       >
-        <LeftComponents>
-          <InputContainer>
-            <StyledInput
+        <Form
+          style={{ width: "100%" }}
+          requiredMark="optional"
+          layout="vertical"
+          onFinish={handleSubmit}
+        >
+          <Form.Item
+            label="Catgory Name"
+            name="category_name"
+            initialValue={categoryName}
+            rules={[
+              {
+                required: true,
+                message: "Please input category name!",
+              },
+            ]}
+            tooltip={{
+              title: "This is required field",
+              icon: <MdOutlineInfo />,
+            }}
+          >
+            <Input
+              required
               size="large"
               showCount
               maxLength={50}
-              value={categoryName}
+              // value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
-              // ref={categoryNameInput}
-              // placeholder="enter category name"
-              // prefix={
-              //   <IconContainer>
-              //     <MdCategory />
-              //   </IconContainer>
-              // }
               suffix={
                 <Tooltip title="Enter food restaurant">
                   <MdOutlineInfo style={{ color: "rgba(0,0,0,.45)" }} />
                 </Tooltip>
               }
             />
-            <Label>Enter category name</Label>
-          </InputContainer>
-
-          <InputContainer>
-            <StyledTextArea
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+            initialValue={description}
+            tooltip={{
+              title: "This is optional field",
+              icon: <MdOutlineInfo />,
+            }}
+          >
+            <TextArea
               size="large"
               showCount
               maxLength={100}
-              value={description}
+              // value={description}
               onChange={(e) => setDescription(e.target.value)}
               style={{ height: 120, resize: "none" }}
               // placeholder="disable resize"
             />
-            <Label>Enter description</Label>
-          </InputContainer>
-          {/* <FileUpload setImageUrl={setImageUrl} /> */}
-        </LeftComponents>
-        <RightComponent>
-          <StyledCheckBox
-            checked={isActive}
-            onChange={() => setIsActive((isActive) => !isActive)}
+          </Form.Item>
+          <Form.Item
+            label="Active Status"
+            name="active_status"
+            tooltip={{
+              title: "This is active status of category",
+              icon: <MdOutlineInfo />,
+            }}
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
-            {isActive ? "Active" : "Not Active"}
-          </StyledCheckBox>
-          <FileUploader
-            firebaseFolderName="category-images"
-            fileList={categoryImages}
-            setFileList={setCategoryImages}
-          />
-        </RightComponent>
+            <Switch
+              checked={isActive}
+              onChange={() => setIsActive((isActive) => !isActive)}
+            />
+          </Form.Item>
+          <Form.Item>
+            <FileUploader
+              firebaseFolderName="category-images"
+              fileList={categoryImages}
+              setFileList={setCategoryImages}
+            />
+          </Form.Item>
+        </Form>
       </StyledModal>
     </>
   );

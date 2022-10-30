@@ -35,6 +35,7 @@ const CategoryController = {
   },
   insertCategory: async (req, res) => {
     const category = req.body;
+    console.log("Category is being inserted", category);
     const categoryImages = category.images;
     let queryString = `INSERT INTO [dbo].[Category]
                           ([category_name]
@@ -53,7 +54,7 @@ const CategoryController = {
                       ,[url]
                       ,[status])
                       VALUES
-                      ('${image.fileName}',
+                      ('${image.name}',
                         '${image.url}', 
                         '${status}')`;
       executeNonQuery(queryString);
@@ -100,23 +101,49 @@ const CategoryController = {
     const oldImages = category.old_images;
     const newImages = category.new_images;
 
-    let queryString = `DELETE * FROM [Category_Image] WHERE category_id = ${category.category_id}`;
+    let queryString = `SELECT image_id
+                    INTO [Temp_Image]
+                    FROM [Image]
+                    Where image_id in (SELECT i.image_id from [Image] i join Category_Image ci
+                                           on i.image_id = ci.image_id join [Category] c 
+                                           on c.category_id = ci.category_id
+                                           where c.category_id = ${category.category_id})
+                    DELETE FROM Category_Image where category_id =  ${category.category_id}
+                    DELETE FROM [Image] where image_id in (SELECT * FROM [Temp_Image])
+                    DROP TABLE [Temp_Image]`;
 
     await executeNonQuery(queryString);
 
-    queryString = `DELETE * FROM [Image] i join `;
-
     queryString = `UPDATE [dbo].[Category]
-                  SET [category_name] = '${category.category_name}'
-                     ,[description] =  '${category.description}'
-                  WHERE [category_id] =  ${category.category_id}`;
+                 SET [category_name] = '${category.category_name}'
+                    ,[description] =  '${category.description}'
+                 WHERE [category_id] =  ${category.category_id}`;
+    const data = await executeNonQuery(queryString);
 
-    // const data = await executeNonQuery(queryString);
+    newImages.map((image) => {
+      const status = image.status == "done" ? 1 : 0;
+      queryString = `INSERT INTO [dbo].[Image]
+                  ([image_name]
+                  ,[url]
+                  ,[status])
+                  VALUES
+                  ('${image.name}',
+                    '${image.url}', 
+                    '${status}')`;
+      executeNonQuery(queryString);
 
-    // return res.json({
-    //   category_id: category.category_id,
-    //   rowAffected: data.at(0),
-    // });
+      queryString = `INSERT INTO [dbo].[Category_Image]
+                    ([category_id]
+                     ,[image_id])
+                VALUES
+                  (${category.category_id},(SELECT IDENT_CURRENT('Image')))`;
+      executeNonQuery(queryString);
+    });
+
+    return res.json({
+      categoryId: category.category_id,
+      rowAffected: data.at(0),
+    });
   },
 };
 
