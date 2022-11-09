@@ -28,6 +28,15 @@ export const insertCategory = createAsyncThunk(
   }
 );
 
+export const changeActveStatus = createAsyncThunk(
+  "category/change/status",
+  async (category) => {
+    console.log("category is being change status ", category);
+    const response = await categoryService.changeActveStatus(category);
+    return response;
+  }
+);
+
 export const updateCategory = createAsyncThunk(
   "category/update",
   async (category) => {
@@ -71,6 +80,14 @@ const categorySlice = createSlice({
         if (action.payload.rowAffected == 1) {
           state.isRefresh = true;
           console.log("insert succesffuly");
+        }
+      })
+      .addCase(changeActveStatus.fulfilled, (state, action) => {
+        if (action.payload.rowAffected == 1) {
+          state.isRefresh = true;
+          console.log(
+            `change status of category ${action.payload.category} succesffuly`
+          );
         }
       })
       .addCase(updateCategory.fulfilled, (state, action) => {

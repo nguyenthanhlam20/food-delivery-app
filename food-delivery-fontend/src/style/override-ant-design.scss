@@ -3,22 +3,79 @@
     border-radius: 15px;
 }
 
-// #40a9ff
+// // #40a9ff
 
-.ant-input-affix-wrapper,
-textarea.ant-input {
-    padding-left: 20px;
-    border-radius: 15px;
+// .ant-input-affix-wrapper,
+// textarea.ant-input {
+//     padding-left: 20px;
+//     border-radius: 15px;
+// }
+
+
+
+// .ant-modal-header,
+// .ant-modal-content {
+//     border-radius: 15px;
+// }
+
+// .ant-carousel .slick-slide {
+//     text-align: center;
+//     height: 160px;
+//     line-height: 160px;
+//     background: #000;
+//     overflow: hidden;
+// }
+
+// .ant-carousel .slick-slide h3 {
+//     color: blue;
+// }
+
+
+
+.ant-carousel .slick-dots li button {
+    color: #000;
+    background-color: #000;
 }
 
-
-
-.ant-modal-header,
-.ant-modal-content {
-    border-radius: 15px;
+.card-menu-category {
+    .ant-card-body {
+        padding: 7px;
+    }
 }
 
+.ant-card-meta {
+    width: 100%;
+    display: block;
+}
 
+.ant-card-meta-title {
+    width: 100%;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+    color: blue;
+    background-color: blue;
+    display: block;
+}
+
+// .ant-carousel .slick-prev,
+// .ant-carousel .slick-next {
+//     background: #000;
+// }
+
+// .ant-carousel {
+//     .slick-next {
+//         &::before {
+//             content: '';
+//         }
+//     }
+
+//     .slick-prev {
+//         &::before {
+//             content: '';
+//         }
+//     }
+// }
 
 .ant-table-content,
 .ant-table,

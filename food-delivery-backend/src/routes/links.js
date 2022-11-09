@@ -2,10 +2,12 @@ import { CONSTANT_ROUTE } from "../constants";
 import UserController from "../controller/UserController";
 import CategoryController from "../controller/CategoryController";
 import RestaurantController from "../controller/RestaurantController";
+import FoodController from "../controller/FoodController";
+import CartController from "../controller/CartController";
 export const Links = [
   {
     route: CONSTANT_ROUTE.SIGN_IN,
-    method: "get",
+    method: "post",
     handleAction: UserController.getUser,
   },
   {
@@ -54,14 +56,57 @@ export const Links = [
     handleAction: CategoryController.deleteCategory,
   },
   {
+    route: CONSTANT_ROUTE.MANAGE_CATEGORY + "/change/status",
+    method: "post",
+    handleAction: CategoryController.changeActiveStatus,
+  },
+
+  ///
+  {
+    route: CONSTANT_ROUTE.MANAGE_FOOD + "/get",
+    method: "get",
+    handleAction: FoodController.getFoods,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_FOOD + "/get/images",
+    method: "post",
+    handleAction: FoodController.getFoodImages,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_FOOD + "/insert",
+    method: "post",
+    handleAction: FoodController.insertFood,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_FOOD + "/update",
+    method: "post",
+    handleAction: FoodController.editFood,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_FOOD + "/delete",
+    method: "post",
+    handleAction: FoodController.deleteFood,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_FOOD + "/change/status",
+    method: "post",
+    handleAction: FoodController.changeActiveStatus,
+  },
+  //
+  {
     route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/get",
     method: "get",
     handleAction: RestaurantController.getRestaurants,
   },
   {
+    route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/get/byid",
+    method: "post",
+    handleAction: RestaurantController.getRestaurantById,
+  },
+  {
     route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/get/images",
-    method: "get",
-    handleAction: RestaurantController.getRestaurants,
+    method: "post",
+    handleAction: RestaurantController.getRestaurantImages,
   },
   {
     route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/insert",
@@ -74,6 +119,11 @@ export const Links = [
     handleAction: RestaurantController.updateRestaurant,
   },
   {
+    route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/change/status",
+    method: "post",
+    handleAction: RestaurantController.changeActiveStatus,
+  },
+  {
     route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/delete",
     method: "post",
     handleAction: RestaurantController.deleteRestaurant,
@@ -82,5 +132,29 @@ export const Links = [
     route: CONSTANT_ROUTE.MANAGE_RESTAURANT + "/change/status",
     method: "post",
     handleAction: RestaurantController.changeRestaurantStatus,
+  },
+
+  {
+    route: CONSTANT_ROUTE.MANAGE_CART + "/get/info",
+    method: "post",
+    handleAction: CartController.getCartInfo,
+  },
+
+  {
+    route: CONSTANT_ROUTE.MANAGE_CART + "/insert/food",
+    method: "post",
+    handleAction: CartController.insertFood,
+  },
+
+  {
+    route: CONSTANT_ROUTE.MANAGE_CART + "/update/food",
+    method: "post",
+    handleAction: CartController.updateFood,
+  },
+
+  {
+    route: CONSTANT_ROUTE.MANAGE_CART + "/delete/food",
+    method: "post",
+    handleAction: CartController.deleteFood,
   },
 ];

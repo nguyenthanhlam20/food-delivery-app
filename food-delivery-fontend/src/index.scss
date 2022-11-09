@@ -4,9 +4,11 @@
 
 @import "style/custom-style.scss";
 
+
+
 body {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -16,8 +18,8 @@ body {
   box-sizing: border-box;
   left: 0;
   right: 0;
-  width: 100vw;
-  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
   /* scrollbar-gutter: stable both-edges; */
 }
 

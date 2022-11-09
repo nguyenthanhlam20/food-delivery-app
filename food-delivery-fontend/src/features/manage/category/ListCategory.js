@@ -1,7 +1,25 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Modal, Input, Tooltip, Popconfirm, Table } from "antd";
+import {
+  Button,
+  Modal,
+  Input,
+  Tooltip,
+  Popconfirm,
+  Table,
+  Card,
+  Col,
+  Row,
+  Carousel,
+  Space,
+  Skeleton,
+} from "antd";
+import {
+  createFromIconfontCN,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import CategoryDetailModal from "../../../components/modal/category/CategoryDetailModal";
 
 import categoryService from "./../../../services/categoryService";
@@ -11,6 +29,7 @@ import {
   insertCategory,
   getCategoryImages,
   deleteCategory,
+  changeActveStatus,
 } from "../../../redux/categorySlice";
 
 import {
@@ -29,85 +48,16 @@ const StyledButton = styled(Button)`
 `;
 
 const Wrapper = styled.div`
-  margin: 30px;
-  background-color: #fff;
+  padding: 25px;
+  width: 100%;
+  border-radius: 5px;
+  backgound-color: #ccc;
+`;
+const HeaderWrapper = styled.div`
+  margin: 25px 25px 0px 25px;
+  // width: 100%;
   border-radius: 5px;
   box-shadow: 0px 5px 8px 0px #ccc;
-  // width: 80%;
-`;
-
-const Title = styled.h2`
-  padding: 10px 0px 0px 20px;
-`;
-
-const StyledTable = styled(Table)`
-  // border: 1px solid #000;
-  margin: 0px;
-  border-radius: 10px;
-  // width: 100%;
-`;
-
-const Label = styled.label``;
-
-const IconContainer = styled.div`
-  display: inline-block;
-  margin-right: 10px;
-  font-size: 15px;
-`;
-
-const ActionWrapper = styled.div`
-  padding: 5px 20px;
-  // width: 50%;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  border-radius: 50px;
-  box-shadow: 0px 4px 6px -4px rgba(58, 53, 65, 0.1),
-    0px 6px 10px -4px rgba(58, 53, 65, 0.08),
-    0px 4px 8px -4px rgba(58, 53, 65, 0.16);
-  &:hover {
-    background: linear-gradient(270deg, #9155fd 0%, #c6a7fe 100%);
-    color: #fff;
-  }
-`;
-
-const ClearButton = styled.button`
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  height: 34px;
-  width: 32px;
-  text-align: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 0px 4px 6px -4px rgba(58, 53, 65, 0.1),
-    0px 6px 10px -4px rgba(58, 53, 65, 0.08),
-    0px 4px 8px -4px rgba(58, 53, 65, 0.16);
-
-  &:hover {
-    background: linear-gradient(270deg, #9155fd 0%, #c6a7fe 100%);
-    color: #fff;
-  }
-`;
-
-const TextField = styled.input`
-  height: 32px;
-  width: 200px;
-  border-radius: 3px;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border: 1px solid #ccc;
-  padding: 0 32px 0 16px;
-  border-radius: 10px;
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 const SubHeaderWrapper = styled.div`
@@ -116,7 +66,7 @@ const SubHeaderWrapper = styled.div`
   // justify-items: space-between;
   justify-content: space-between;
   width: 100%;
-  padding: 20px 10px 10px 10px;
+  padding: 15px;
 `;
 
 const Filter = styled.div`
@@ -127,24 +77,40 @@ const StyledInput = styled(Input)`
   border-radius: 10px;
 `;
 
-const AddButton = styled.div`
-  display: flex;
-  flex-direction: row;
+const StyledRow = styled(Row)`
+  margin-bottom: 20px;
+  // display: flex;
+  // height: auto;
+`;
+
+const CardImage = styled.img`
+  height: 150px;
+  width: 70%;
 `;
 
 const { confirm } = Modal;
+const { Meta } = Card;
 
-const showDeleteConfirm = (handleDelete, categoryId) => {
-  // console.log(categoryId);
+const showConfirmModal = (handleChangeStatus, category) => {
+  // alert(category.is_active);
   confirm({
-    title: "Are you sure to delete this restaurant?",
+    title: `Are you sure to ${
+      category.is_active == true ? "deactivate" : "activate"
+    } this restaurant?`,
     // icon: <MdWarning />,
-    content: "All information related to this restaurant will be deleted",
+    content: `All information related to category "${
+      category.category_name
+    }" will be ${
+      category.is_active ? "hide from the users" : "show to users"
+    } `,
     okText: "Yes",
     okType: "danger",
     cancelText: "No",
     onOk() {
-      handleDelete(categoryId);
+      handleChangeStatus({
+        category_id: category.category_id,
+        is_active: category.is_active,
+      });
     },
     onCancel() {
       console.log("Cancel");
@@ -188,8 +154,108 @@ const SubHeaderComponent = ({
   </SubHeaderWrapper>
 );
 
+const StyledColumn = styled.div`
+  background: red;
+  width: 100px;
+  height: auto;
+  margin: 10px;
+`;
+
 export const ListCategory = ({ categories }) => {
   // console.log("list categories: ", categories);
+  let rows = categories.length / 6;
+
+  const remain = categories.length % 6;
+  if (remain != 0) rows += 1;
+
+  const arr = [];
+
+  for (let i = 0; i < rows; i++) {
+    arr.push(i);
+  }
+
+  const [isLoading, setIsLoading] = React.useState(true);
+  setTimeout(() => {
+    setIsLoading(false);
+  }, 2000);
+
+  const renderImage = (images) => {
+    return images.map((image, index) => {
+      return <CardImage key={index} src={image.url} />;
+    });
+  };
+  const renderColumn = (cateSlice) => {
+    return cateSlice.map((category) => (
+      <Col span={4}>
+        <Card
+          hoverable
+          style={{
+            color: "#fff",
+            borderRadius: "10px",
+          }}
+        >
+          {isLoading ? (
+            <>
+              <Skeleton avatar active />
+            </>
+          ) : (
+            <>
+              <Carousel arrows={true} style={{ width: "inherit" }}>
+                {renderImage(category.images)}
+              </Carousel>
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <Meta
+                  style={{ height: 24, margin: "5px 0" }}
+                  title={category.category_name}
+                />
+
+                <Button
+                  onClick={() => handleEdit(category)}
+                  style={{ width: "100%", height: 32 }}
+                  type="primary"
+                >
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => showConfirmModal(handleChangeStatus, category)}
+                  style={{ width: "100%", height: 32 }}
+                  type="primary"
+                >
+                  {category.is_active ? "Deactivate" : "Activate"}
+                </Button>
+              </Space>
+            </>
+          )}
+        </Card>
+      </Col>
+    ));
+  };
+
+  const renderRow = (index, rowNumber) => {
+    let jumpStep = 6;
+    if (remain != 0 && rowNumber === rows - 1) {
+      jumpStep = remain;
+    }
+    const cateSlice = categories.slice(index, index + jumpStep);
+    // console.log(`cateSlice ${rowNumber}`, cateSlice);
+    return (
+      <>
+        <StyledRow style={{ display: "flex" }} type="flex" gutter={[24, 24]}>
+          {renderColumn(cateSlice)}
+        </StyledRow>
+      </>
+    );
+  };
+
+  const renderCategory = () => {
+    return arr.map((rowNumber) => {
+      let index = rowNumber * 6;
+      return renderRow(index, rowNumber);
+    });
+  };
+
+  //use
+
   const dispatch = useDispatch();
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
@@ -225,104 +291,31 @@ export const ListCategory = ({ categories }) => {
       });
   };
 
-  const columns = [
-    {
-      title: "Category Name",
-      dataIndex: "category_name",
-
-      sorter: (a, b) => {
-        if (a.category_name > b.category_name) return 1;
-        else if (a.category_name < b.category_name) return -1;
-        else return 0;
-      },
-      width: "20%",
-    },
-    {
-      title: "Number of food",
-      dataIndex: "number_of_food",
-      sorter: (a, b) => {
-        if (a.number_of_food > b.number_of_food) return 1;
-        else if (a.number_of_food < b.number_of_food) return -1;
-        else return 0;
-      },
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      sorter: (a, b) => {
-        if (a.description > b.description) return 1;
-        else if (a.description < b.description) return -1;
-        else return 0;
-      },
-    },
-    {
-      title: "Actions",
-      dataIndex: "",
-      render: (row) => (
-        <>
-          <StyledButton
-            type="primary"
-            icon={<MdOutlineDriveFileRenameOutline />}
-            onClick={() => handleEdit(row)}
-          >
-            Edit
-          </StyledButton>
-
-          <StyledButton
-            onClick={() => showDeleteConfirm(handleDelete, row.category_id)}
-            type="primary"
-            icon={<MdOutlineDriveFileRenameOutline />}
-          >
-            Delete
-          </StyledButton>
-        </>
-      ),
-      width: "230px",
-    },
-  ];
-
-  const handleDelete = (categoryId) => {
-    dispatch(deleteCategory({ categoryId: categoryId }));
+  const handleChangeStatus = (category) => {
+    dispatch(changeActveStatus(category));
   };
 
-  const data = filteredItems;
-  const ExpandedComponent = ({ data }) => (
-    <pre>{JSON.stringify(data, null, 2)}</pre>
-  );
-
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
   return (
     <>
-      <Wrapper>
-        {isOpenModal == true ? (
-          <CategoryDetailModal
-            isOpen={isOpenModal}
-            setIsOpen={setIsOpenModal}
-            currentCategory={currentCategory}
-            setCurrentCategory={setCurrentCategory}
-            isInsertCategory={isInsertCategory}
-            setIsInsertCategory={setIsInsertCategory}
-          />
-        ) : null}
-
+      {isOpenModal ? (
+        <CategoryDetailModal
+          isOpen={isOpenModal}
+          setIsOpen={setIsOpenModal}
+          currentCategory={currentCategory}
+          setCurrentCategory={setCurrentCategory}
+          isInsertCategory={isInsertCategory}
+          setIsInsertCategory={setIsInsertCategory}
+        />
+      ) : null}
+      <HeaderWrapper style={{ backgroundColor: "#fff" }}>
         <SubHeaderComponent
-          // onFilter={onFilter}
           setIsOpenModal={setIsOpenModal}
           setCurrentCategory={setCurrentCategory}
           setIsInsertCategory={setIsInsertCategory}
         />
-        {/* <Title>List Restaurant</Title> */}
-        <StyledTable
-          rowKey={"category_id"}
-          columns={columns}
-          dataSource={filteredItems}
-          onChange={onChange}
-          scroll={{
-            y: 400,
-          }}
-        />
+      </HeaderWrapper>
+      <Wrapper>
+        <div className="site-card-wrapper">{renderCategory()}</div>
       </Wrapper>
     </>
   );

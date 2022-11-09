@@ -21,3 +21,25 @@
 //     background: #3858e6;
 
 // }
+.category-item-content {
+    .ant-card-meta-description {
+        height: 48px;
+        overflow: auto;
+    }
+
+    .ant-card-meta-description::-webkit-scrollbar {
+        width: 5px;
+    }
+}
+
+.site-card-wrapper {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 500px;
+    max-width: 100%;
+    width: 1270px;
+}
+
+.site-card-wrapper::-webkit-scrollbar {
+    display: none;
+}

@@ -18,11 +18,16 @@ const authenSlice = createSlice({
   initialState: {
     user: null,
     token: null,
+    createAccountStatus: false,
   },
   reducers: {
     signOut: (state, action) => {
       state.user = null;
       state.token = null;
+      sessionStorage.removeItem("token");
+    },
+    resetCreateAccountStatus: (state, action) => {
+      state.createAccountStatus = false;
     },
   },
   extraReducers: (builder) => {
@@ -30,13 +35,16 @@ const authenSlice = createSlice({
       const { user, accessToken } = action.payload;
       state.user = user;
       state.token = accessToken;
+      sessionStorage.setItem("token", accessToken);
+      console.log("login successfully", action.payload);
     });
     builder.addCase(signup.fulfilled, (state, action) => {
       if (action.payload.rowAffected == 1) {
-        const { user, accessToken } = action.payload;
-        state.user = user;
-        state.token = accessToken;
+        // const { user, accessToken } = action.payload;
+        state.createAccountStatus = true;
+        // state.token = accessToken;
       }
+      console.log("create account successfully", action.payload);
     });
   },
 });

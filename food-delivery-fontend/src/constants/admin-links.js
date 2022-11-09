@@ -1,5 +1,5 @@
 import { CONSTANT_ROUTE } from "./route.constants";
-import { ROLE } from "./contants";
+import { ROLE } from "./roles";
 import {
   MdFastfood,
   MdRestaurant,
@@ -8,7 +8,7 @@ import {
   MdCategory,
 } from "react-icons/md";
 
-const Links = [
+const AdminLinks = [
   {
     name: "Dashboard",
     icon: <MdHome />,
@@ -41,4 +41,4 @@ const Links = [
   },
 ];
 
-export default Links;
+export default AdminLinks;

@@ -4,19 +4,43 @@ const dbp = DBProvider();
 
 const CategoryController = {
   getCategories: async (req, res) => {
-    const queryString = `select c.category_id, 
+    let queryString = `select c.category_id, 
                                 c.category_name,
+                                c.[is_active],
                                 c.[description],
                                 count(f.food_id) as 'number_of_food'
                         from [category] c left join [food] f on c.category_id = f.category_id
                         group by c.category_id, 
                                 c.category_name,
+                                c.[is_active],
                                 c.[description]`;
-    const data = await executeQuery(queryString);
+    let data = await executeQuery(queryString);
 
-    const categories = data;
-    console.log(req.body);
-    return res.json(categories);
+    let categories = data;
+
+    const handleGetImage = async (category) => {
+      queryString = `select i.image_id as [uid], 
+                         i.image_name as [name],
+                         i.url
+                    from [Category_Image] ci join Category c
+                    on ci.category_id = c.category_id join [Image] i
+                    on i.image_id = ci.image_id where c.category_id = ${category.category_id}`;
+      data = await executeQuery(queryString);
+
+      category.images = data;
+      return category;
+    };
+
+    let newCategories = [];
+    for (let i = 0; i < categories.length; i++) {
+      let cate = await handleGetImage(categories[i]).then((response) => {
+        return response;
+      });
+      newCategories.push(cate);
+    }
+
+    // console.log("categories", newCategories);
+    return res.json(newCategories);
   },
   getCategoryImages: async (req, res) => {
     const categoryId = req.body.categoryId;
@@ -71,7 +95,7 @@ const CategoryController = {
 
     console.log(data);
 
-    return res.json({ category: category, rowAffected: data.at(0) });
+    return res.json({ category: category, rowAffected: data });
   },
   deleteCategory: async (req, res) => {
     const categoryId = req.body.categoryId;
@@ -95,6 +119,19 @@ const CategoryController = {
 
     return res.json({ categoryId: categoryId, rowAffected: data.at(0) });
   },
+  changeActiveStatus: async (req, res) => {
+    const category = req.body;
+    console.log(category);
+
+    const queryString = `UPDATE [dbo].[Category]
+                         SET [is_active] = '${!category.is_active}'
+                         WHERE [category_id] =  ${category.category_id}`;
+
+    const data = await executeNonQuery(queryString);
+
+    return res.json({ category: category, rowAffected: data });
+  },
+
   updateCategory: async (req, res) => {
     const category = req.body;
     console.log(req.body);
@@ -112,11 +149,14 @@ const CategoryController = {
                     DELETE FROM [Image] where image_id in (SELECT * FROM [Temp_Image])
                     DROP TABLE [Temp_Image]`;
 
+    console.log("query", queryString);
+
     await executeNonQuery(queryString);
 
     queryString = `UPDATE [dbo].[Category]
                  SET [category_name] = '${category.category_name}'
                     ,[description] =  '${category.description}'
+                    ,[is_active] = '${category.is_active}'
                  WHERE [category_id] =  ${category.category_id}`;
     const data = await executeNonQuery(queryString);
 
@@ -142,7 +182,7 @@ const CategoryController = {
 
     return res.json({
       categoryId: category.category_id,
-      rowAffected: data.at(0),
+      rowAffected: data,
     });
   },
 };

@@ -1,34 +1,35 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { ROLE, Links } from "../constants";
+import { ROLE, AdminsLinks, UserLinks } from "../constants";
+import { decryptToken } from "../helpers/decryptToken";
 import logo from "./../assets/images/logo.png";
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  display: flex;
   flex-direction: column;
   justify-content: flex-start;
-
-  height: 100vh;
+  margin: 0;
+  padding: 0;
   width: 220px;
-
-  //   width: 100%;
-  background: #ffffff;
+  background: #fff;
+  height: inherit;
   box-shadow: 2px 2px 2px solid #ccc;
   // border-right: 1px solid rgba(100, 100, 255, 0.1);
 `;
 
 const NavbarList = styled.ul`
   width: 100%;
+  // height: 100%;
   box-sizing: border-box;
   list-style-type: none;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   justify-item: flex-start;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   padding-top: 10px;
   border-top: 2px solid #fbf8ee;
 `;
@@ -43,7 +44,7 @@ const IconContainer = styled.div`
   color: ${(props) => props.color};
 `;
 const NavbarItem = styled.li`
-  padding: 3px 20px;
+  padding: 3px 15px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -97,42 +98,51 @@ const LogoImage = styled.img`
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const currentPage = localStorage.getItem("currentPage");
-  // console.log(currentPage);
+  const token = sessionStorage.getItem("token");
+  if (token) {
+    decryptToken(token);
+    // console.log("user after decrypt token", user);
+  }
 
-  const renderLinks = () => {
-    return Links.map((link, index) => {
-      if (link.role === ROLE.EVERYONE || link.role === ROLE.ADMIN) {
-        return (
-          <NavbarItemContainer
-            key={link.path}
-            borderHighlight={
-              currentPage === link.name ? "5px solid #40a9ff" : "5px solid #fff"
+  let links = UserLinks;
+
+  // if (user?.role === "admin") {
+  //   links = AdminsLinks;
+  // }
+
+  const currentPage = localStorage.getItem("currentPage");
+
+  const renderLinks = (links) => {
+    return links.map((link, index) => {
+      return (
+        <NavbarItemContainer
+          key={link.path}
+          borderHighlight={
+            currentPage === link.name ? "5px solid #40a9ff" : "5px solid #fff"
+          }
+        >
+          <NavbarItem
+            backgroundColor={currentPage === link.name ? "#40a9ff" : "#fff"}
+            textColor={currentPage === link.name ? "#fff" : "#000"}
+            boxShadow={
+              currentPage === link.name
+                ? "0px 2px 2px 1px rgba(58, 53, 65, 0.1)"
+                : "none"
             }
+            onClick={() => {
+              navigate(link.path);
+              localStorage.setItem("currentPage", link.name);
+            }}
           >
-            <NavbarItem
-              backgroundColor={currentPage === link.name ? "#40a9ff" : "#fff"}
-              textColor={currentPage === link.name ? "#fff" : "#000"}
-              boxShadow={
-                currentPage === link.name
-                  ? "0px 2px 2px 1px rgba(58, 53, 65, 0.1)"
-                  : "none"
-              }
-              onClick={() => {
-                navigate(link.path);
-                localStorage.setItem("currentPage", link.name);
-              }}
+            <IconContainer
+              color={currentPage === link.name ? "#fff" : "#40a9ff"}
             >
-              <IconContainer
-                color={currentPage === link.name ? "#fff" : "#40a9ff"}
-              >
-                {link.icon}
-              </IconContainer>
-              <Label>{link.name}</Label>
-            </NavbarItem>
-          </NavbarItemContainer>
-        );
-      }
+              {link.icon}
+            </IconContainer>
+            <Label>{link.name}</Label>
+          </NavbarItem>
+        </NavbarItemContainer>
+      );
     });
   };
 
@@ -142,7 +152,7 @@ const Navbar = () => {
         <LogoContainer>
           <LogoImage src={logo} />
         </LogoContainer>
-        <NavbarList>{renderLinks()}</NavbarList>
+        <NavbarList>{renderLinks(links)}</NavbarList>
       </Wrapper>
     </>
   );

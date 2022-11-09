@@ -68,49 +68,37 @@ const FileUploader = ({ firebaseFolderName, fileList, setFileList }) => {
 
   return (
     <>
-      <Form.Item
-        label="Upload Images"
-        name="image"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-        tooltip={{
-          title: "Upload category images",
-          icon: <MdOutlineInfo />,
+      <Upload
+        accept="image/*"
+        // data={(file) => ((file.status === "done"))}
+        beforeUpload={(file) => {
+          let existFileStatus = false;
+          fileList.map((currentFile) => {
+            if (file.name === currentFile.name) {
+              existFileStatus = true;
+            }
+          });
+
+          if (existFileStatus) message.error(`File is already exist`);
+
+          return !existFileStatus;
+        }}
+        fileList={fileList}
+        customRequest={uploadImage}
+        onChange={onChange}
+        onRemove={(file) => {
+          // console.log(fileList);
+
+          handleDelete({
+            firebaseFolderName: firebaseFolderName,
+            fileName: file.name,
+          });
         }}
       >
-        <Upload
-          accept="image/*"
-          // data={(file) => ((file.status === "done"))}
-          beforeUpload={(file) => {
-            let existFileStatus = false;
-            fileList.map((currentFile) => {
-              if (file.name === currentFile.name) {
-                existFileStatus = true;
-              }
-            });
-
-            if (existFileStatus) message.error(`File is already exist`);
-
-            return !existFileStatus;
-          }}
-          fileList={fileList}
-          customRequest={uploadImage}
-          onChange={onChange}
-          onRemove={(file) => {
-            // console.log(fileList);
-
-            handleDelete({
-              firebaseFolderName: firebaseFolderName,
-              fileName: file.name,
-            });
-          }}
-        >
-          <Button icon={<UploadOutlined />}>Click to Upload</Button>
-        </Upload>
-      </Form.Item>
+        <Button type="primary" icon={<UploadOutlined />}>
+          Click to Upload
+        </Button>
+      </Upload>
     </>
   );
 };

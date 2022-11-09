@@ -5,15 +5,18 @@ const dbp = DBProvider();
 const UserController = {
   getUser: async (req, res) => {
     let user = req.body;
+    console.log("user detail", user);
     const queryString = `SELECT * FROM [User] WHERE username = '${user.username}' AND password = '${user.password}'`;
     const data = await executeQuery(queryString);
+    console.log("user return", data);
+    if (data.length > 0) {
+      user = data[0];
 
-    if (data.at(0)) {
-      user = data.at(0);
       const accessToken = jwt.sign(user, "secretKey", {
         expiresIn: "20m",
       });
-      return res.json({ user, accessToken: accessToken });
+      console.log(accessToken);
+      return res.json({ user: user, accessToken: accessToken });
     } else {
       return res.status(401).json("Username or password incorrect");
     }
@@ -31,15 +34,17 @@ const UserController = {
     const queryString = `INSERT INTO [dbo].[User]
                           ([username]
                           ,[password]
-                          ,[email])
+                          ,[phone]
+                          ,[role])
                           VALUES ('${user.username}', 
                                   '${user.password}',
-                                  '${user.email}')`;
+                                  '${user.phone}', 
+                                  'user')`;
     const data = await executeNonQuery(queryString);
 
     console.log(data);
 
-    return res.json({ user: user, rowAffected: data.at(0) });
+    return res.json({ user: user, rowAffected: data });
   },
 };
 

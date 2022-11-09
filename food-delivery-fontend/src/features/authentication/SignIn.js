@@ -6,181 +6,216 @@ import { Link, useNavigate } from "react-router-dom";
 import { CgProfile, CgLock } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 // import authenSlide from "../redux";
-import { signin } from "../../redux/authenSlice";
+import authenSlice, { signin } from "../../redux/authenSlice";
 import { CONSTANT_ROUTE } from "../../constants";
 import { validateInput } from "../../helpers";
 import signin_logo from "./../../assets/images/signin_logo.png";
 import styled from "styled-components";
 
+import {
+  AiFillFacebook,
+  AiFillGoogleCircle,
+  AiFillLock,
+  AiOutlineFacebook,
+  AiOutlineUser,
+} from "react-icons/ai";
+import { FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { Button, Input, Space } from "antd";
+
 const Container = styled.div`
-  margin: auto;
-  display: flex;
-  flex-direction: row;
-
-  margin-top: 20px;
-  width: 90%;
-  height: 90vh;
-  // height: 500px;
-  // border: 1px solid #D35400;
-  border-radius: 15px;
-
-  box-shadow: 0px 8px 8px 0px #ccc;
   background-color: #fff;
-  padding: 0px;
-`;
-
-const RightComponent = styled.div`
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  justify-items: center;
-  box-sizing: border-box;
-  width: 45%;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  width: 800px;
+  max-width: 100%;
+  min-height: 550px;
+  margin: auto;
 `;
 
 const LeftComponent = styled.div`
-  width: 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // align-items: center;
+  position: absolute;
+  height: 100%;
+  width: 50%;
+
+  padding: 30px;
 `;
 
-const InputGroup = styled.div`
-  position: relative;
-  margin-bottom: 15px;
-  box-sizing: border-box;
+const SocialContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: center;
+  width: 100%;
 `;
 
-const InputFeild = styled.input`
-  width: 93%;
-  padding: 15px 0px 15px 35px;
-  border-radius: 8px;
-  border: 2px solid #ccc;
+const SocialIcon = styled.div`
+  font-size: 30px;
+`;
+
+const Message = styled.span`
+  text-align: center;
+  display: inherit;
+`;
+
+const InputFeild = styled(Input)`
+  padding: 10px;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 7px;
   box-shadow: 2px 2px 2px #ccc;
   outline: none;
-
-  &:hover {
-    border: 2px solid #0000ff;
-  }
 `;
 
-const Button = styled.button`
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 50px;
-  background-color: #d35400;
-  color: #fff;
+const Title = styled.h1`
+  font-weight: bold;
+  text-align: center;
+`;
+
+const StyledButton = styled(Button)`
+  width: 100%;
+  height: 40px;
   font-weight: bold;
 `;
 
 const StyledLink = styled(Link)`
-  text-decoration: none;
-
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const StyledIcon = styled.div`
-  top: 12px;
-  left: 10px;
-  font-size: 20px;
+const RightComponent = styled.div`
   position: absolute;
-  color: #0000ff;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
+
+  background: #548cff;
+  background: -webkit-linear-gradient(to right, #6f38c5, #87a2fb);
+  background: linear-gradient(to right, #6f38c5, #87a2fb);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  color: #ffffff;
+  position: relative;
+  // left: -100%;
+  height: 100%;
+  width: 100%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
 `;
 
-const Title = styled.h2`
-  text-agile: left;
+const Content = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
 `;
 
-const Logo = styled.div`
-  background-image: url(${signin_logo});
-`;
 function SignIn() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const authenState = useSelector((state) => state.authen);
+  const { signOut } = authenSlice.actions;
+
+  React.useEffect(() => {
+    dispatch(signOut());
+  }, []);
+
+  // console.log("first", authenState);
   React.useEffect(() => {
     if (authenState?.token != null) {
-      console.log(authenState.token);
       navigate("/");
     }
   }, [authenState.token]);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+
+  const handleSignIn = () => {
+    dispatch(signin({ username: username, password: password }));
+  };
   return (
     <>
       <Container>
         <LeftComponent>
-          <Logo />
-        </LeftComponent>
-        <RightComponent>
-          <Title>Sign In</Title>
-          <InputGroup>
-            <StyledIcon>
-              <CgProfile className="icon" />
-            </StyledIcon>
+          <Title>Sign in</Title>
+          <SocialContainer>
+            <Space
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+              direction="horizontal"
+              size={30}
+            >
+              <SocialIcon>
+                <FaFacebook />
+              </SocialIcon>
+              <SocialIcon>
+                <FcGoogle />
+              </SocialIcon>
+            </Space>
+          </SocialContainer>
+          <Space direction="vertical" size={15}>
+            <Message>or use your account</Message>
             <InputFeild
-              onChange={(e) => setUsername(e.target.value)}
-              className="field"
+              prefix={<AiOutlineUser />}
               type="text"
               placeholder="Username"
-              required
+              onChange={(e) => setUsername(e.target.value)}
             />
-          </InputGroup>
-          <InputGroup>
-            <StyledIcon>
-              <CgLock className="icon" />
-            </StyledIcon>
             <InputFeild
-              onChange={(e) => setPassword(e.target.value)}
-              className="field"
+              prefix={<AiFillLock />}
               type="password"
               placeholder="Password"
-              required
+              onChange={(e) => setPassword(e.target.value)}
             />
-          </InputGroup>
-          <Button
-            onClick={() => {
-              const usernameRes = validateInput({
-                name: "Username",
-                value: username,
-                regex: /[a-zA-Z0-9]/,
-                regexMessage: "characters from a-z, A-Z, 0-9",
-              });
-              const passwordRes = validateInput({
-                name: "Password",
-                value: password,
-                regex: /^[ -~]+$/,
-                regexMessage: "",
-              });
-              if (usernameRes.status == true && passwordRes.status == true) {
-                dispatch(signin({ username, password }));
-
-                if (!authenState?.token) {
-                  toast.warning("Username or password isn't correct");
-                }
-              } else {
-                if (usernameRes.message != "") {
-                  toast.warning(usernameRes.message);
-                }
-
-                if (passwordRes.message != "") {
-                  toast.warning(passwordRes.message);
-                }
-              }
-            }}
-            className="btn"
-          >
-            Sign In
-          </Button>
-          <StyledLink to={CONSTANT_ROUTE.FORGOT_PASSWORD}>
-            Forgot Password?
-          </StyledLink>
-          <StyledLink className="link" to={CONSTANT_ROUTE.SIGN_UP}>
-            Sign Up
-          </StyledLink>
+            <StyledLink to="/forgot/password">Forgot your password?</StyledLink>
+            <StyledButton
+              onClick={() => handleSignIn()}
+              type="primary"
+              size="large"
+            >
+              Sign In
+            </StyledButton>
+          </Space>
+        </LeftComponent>
+        <RightComponent>
+          <Content>
+            <Space direction="vertical" size={20}>
+              <Title style={{ color: "#fff" }}>Hello, Friend!</Title>
+              <Message>
+                Enter your personal details and start journey with us
+              </Message>
+              <StyledButton>
+                <Link to="/signup">Sign Up</Link>
+              </StyledButton>
+            </Space>
+          </Content>
         </RightComponent>
-        <ToastContainer />
       </Container>
+      <ToastContainer theme="colored" position="bottom-right" />
     </>
   );
 }

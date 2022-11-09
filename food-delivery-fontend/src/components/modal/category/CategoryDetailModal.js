@@ -121,7 +121,7 @@ const CategoryDetailModal = ({
   return (
     <>
       <StyledModal
-        title="Insert Category"
+        title={isInsertCategory ? "Insert Category" : "Edit Category"}
         open={isOpen}
         width={1000}
         centered

@@ -1,177 +1,246 @@
-import React, { useEffect, useState } from "react";
-
+import React from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
+
 import { CgProfile, CgLock } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
+// import authenSlide from "../redux";
+import authenSlice, { signin, signup } from "../../redux/authenSlice";
 import { CONSTANT_ROUTE } from "../../constants";
-import authenSlide from "../../redux";
-import { signup } from "../../redux/authenSlice";
-
+import { validateInput } from "../../helpers";
+import signin_logo from "./../../assets/images/signin_logo.png";
 import styled from "styled-components";
 
+import {
+  AiFillContacts,
+  AiFillFacebook,
+  AiFillGoogleCircle,
+  AiFillLock,
+  AiFillPhone,
+  AiOutlineFacebook,
+  AiOutlineUser,
+} from "react-icons/ai";
+import { FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { Button, Input, Space } from "antd";
+
 const Container = styled.div`
-  box-sizing: border-box;
-  margin: auto;
-  display: flex;
-  flex-direction: row;
-
-  margin-top: 20px;
-  width: 90%;
-  height: 90vh;
-  // height: 500px;
-  // border: 1px solid #D35400;
-  border-radius: 15px;
-
-  box-shadow: 0px 8px 8px 0px #ccc;
   background-color: #fff;
-  padding: 0px;
-`;
-
-const RightComponent = styled.div`
-  width: 55%;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  justify-items: center;
-  width: 45%;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  width: 800px;
+  max-width: 100%;
+  min-height: 550px;
+  margin: auto;
 `;
 
 const LeftComponent = styled.div`
-  width: 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // align-items: center;
+  position: absolute;
+  height: 100%;
+  width: 50%;
+
+  padding: 30px;
 `;
 
-const InputGroup = styled.div`
-  position: relative;
-  margin-bottom: 15px;
+const SocialContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: center;
+  width: 100%;
 `;
 
-const InputFeild = styled.input`
-  width: 93%;
+const SocialIcon = styled.div`
+  font-size: 30px;
+`;
 
-  padding: 15px 0px 15px 35px;
-  border-radius: 8px;
-  border: 2px solid #ccc;
+const Message = styled.span`
+  text-align: center;
+  display: inherit;
+`;
+
+const InputFeild = styled(Input)`
+  padding: 10px;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 7px;
   box-shadow: 2px 2px 2px #ccc;
   outline: none;
-
-  &:hover {
-    border: 2px solid #0000ff;
-  }
 `;
 
-const Button = styled.button`
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 50px;
-  background-color: #d35400;
-  color: #fff;
+const Title = styled.h1`
+  font-weight: bold;
+  text-align: center;
+`;
+
+const StyledButton = styled(Button)`
+  width: 100%;
+  height: 40px;
   font-weight: bold;
 `;
 
 const StyledLink = styled(Link)`
-  text-decoration: none;
-
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const IconContainer = styled.div`
-  top: 12px;
-  left: 10px;
-  font-size: 20px;
+const RightComponent = styled.div`
   position: absolute;
-  color: #0000ff;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
+
+  background: #548cff;
+  background: -webkit-linear-gradient(to right, #6f38c5, #87a2fb);
+  background: linear-gradient(to right, #6f38c5, #87a2fb);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  color: #ffffff;
+  position: relative;
+  // left: -100%;
+  height: 100%;
+  width: 100%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
 `;
 
-const Title = styled.h2`
-  text-agile: left;
+const Content = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
 `;
 
-const Logo = styled.div``;
-
-function SignUp() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [phone, setPhone] = React.useState("");
 
-  const token = useSelector((state) => state.authen.token);
+  const authenState = useSelector((state) => state.authen);
+  const { signOut } = authenSlice.actions;
 
-  useEffect(() => {
-    if (token) {
-      navigate("/");
+  React.useEffect(() => {
+    dispatch(signOut());
+  }, []);
+  const { resetCreateAccountStatus } = authenSlice.actions;
+
+  // console.log(authenSlice.actions);
+  React.useEffect(() => {
+    if (authenState?.createAccountStatus) {
+      console.log("create account status", authenState.createAccountStatus);
+      dispatch(resetCreateAccountStatus());
+      navigate("/signin");
     }
-  }, [token]);
+  }, [authenState.createAccountStatus]);
+
+  const handleSignUp = () => {
+    dispatch(signup({ username: username, password: password, phone: phone }));
+  };
 
   return (
     <>
       <Container>
         <LeftComponent>
-          <Logo />
-        </LeftComponent>
-        <RightComponent>
-          <Title>Sign Up</Title>
-          <InputGroup>
-            <IconContainer>
-              <CgProfile />
-            </IconContainer>
+          <Title>Create Account</Title>
+          <SocialContainer>
+            <Space
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+              direction="horizontal"
+              size={30}
+            >
+              <SocialIcon>
+                <FaFacebook />
+              </SocialIcon>
+              <SocialIcon>
+                <FcGoogle />
+              </SocialIcon>
+            </Space>
+          </SocialContainer>
+          <Space direction="vertical" size={15}>
+            <Message>or create new account</Message>
             <InputFeild
-              onChange={(e) => setUsername(e.target.value)}
+              prefix={<AiOutlineUser />}
               type="text"
               placeholder="Username"
-              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-          </InputGroup>
-          <InputGroup>
-            <IconContainer>
-              <CgProfile />
-            </IconContainer>
             <InputFeild
-              onChange={(e) => setEmail(e.target.value)}
+              prefix={<AiFillPhone />}
               type="text"
-              placeholder="Email"
-              required
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
-          </InputGroup>
-          <InputGroup>
-            <IconContainer>
-              <CgLock />
-            </IconContainer>
             <InputFeild
-              onChange={(e) => setPassword(e.target.value)}
+              prefix={<AiFillLock />}
               type="password"
               placeholder="Password"
-              required
-            />
-          </InputGroup>
-          <InputGroup>
-            <IconContainer>
-              <CgLock />
-            </IconContainer>
-            <InputFeild
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="Confirm Password"
-              required
             />
-          </InputGroup>
-          <Button
-            onClick={() => dispatch(signup({ username, password, email }))}
-            className="btn"
-          >
-            Sign Up
-          </Button>
-          <StyledLink className="link" to={CONSTANT_ROUTE.SIGN_IN}>
-            Sign In
-          </StyledLink>
+            <InputFeild
+              prefix={<AiFillLock />}
+              type="password"
+              value={password}
+              placeholder="Confirm Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {/* <StyledLink to="/forgot/password">Forgot your password?</StyledLink> */}
+            <StyledButton
+              type="primary"
+              size="large"
+              onClick={() => handleSignUp()}
+            >
+              Sign Up
+            </StyledButton>
+          </Space>
+        </LeftComponent>
+        <RightComponent>
+          <Content>
+            <Space direction="vertical" size={20}>
+              <Title style={{ color: "#fff" }}>Welcome Back!</Title>
+              <Message>
+                To keep connected with us please login with your personal info
+              </Message>
+              <StyledButton>
+                <Link to="/signin">Sign In</Link>
+              </StyledButton>
+            </Space>
+          </Content>
         </RightComponent>
       </Container>
+      <ToastContainer theme="colored" position="bottom-right" />
     </>
   );
 }
 
-export default SignUp;
+export default SignIn;

@@ -8,7 +8,7 @@ import { CONSTANT_ROUTE } from "../constants";
 export const routes = [
   {
     path: CONSTANT_ROUTE.HOME_PAGE,
-    isPrivate: false,
+    isPrivate: true,
     component: <Pages.HomePage />,
     exact: true,
   },
@@ -26,20 +26,62 @@ export const routes = [
   },
   {
     path: CONSTANT_ROUTE.MANAGE_USER,
-    isPrivate: false,
+    isPrivate: true,
     component: <Pages.ListUserPage />,
     exact: true,
   },
   {
     path: CONSTANT_ROUTE.MANAGE_RESTAURANT,
-    isPrivate: false,
+    isPrivate: true,
     component: <Pages.ListRestaurantPage />,
     exact: true,
   },
   {
     path: CONSTANT_ROUTE.MANAGE_CATEGORY,
-    isPrivate: false,
+    isPrivate: true,
     component: <Pages.ListCategoryPage />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.MANAGE_FOOD,
+    isPrivate: true,
+    component: <Pages.ListFoodPage />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.INSERT_RESTAURANT,
+    isPrivate: true,
+    component: <Pages.InsertRestaurantPage />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.EDIT_RESTAURANT,
+    isPrivate: true,
+    component: <Pages.EditRestaurantPage />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.FOOD_ORDER,
+    isPrivate: true,
+    component: <Pages.FoodOrder />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.FAVORITE,
+    isPrivate: true,
+    component: <Pages.Favorite />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.ORDER_HISTORY,
+    isPrivate: true,
+    component: <Pages.OrderHistory />,
+    exact: true,
+  },
+  {
+    path: CONSTANT_ROUTE.BILLS,
+    isPrivate: true,
+    component: <Pages.Bills />,
     exact: true,
   },
 ];
