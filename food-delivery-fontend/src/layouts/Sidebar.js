@@ -1,7 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
-import { Avatar, Button, Carousel, Dropdown, InputNumber, Menu } from "antd";
+import {
+  Avatar,
+  Button,
+  Carousel,
+  Dropdown,
+  InputNumber,
+  Menu,
+  message,
+} from "antd";
 import FoodCardList from "../features/manage/food/FoodCardList";
 import { useDispatch, useSelector } from "react-redux";
 import { getFoods } from "../redux/foodSlice";
@@ -14,6 +22,10 @@ import {
 } from "react-icons/ai";
 import { TbTrash } from "react-icons/tb";
 import authenSlice from "../redux/authenSlice";
+import { deleteFood, getCartInfo, updateFood } from "../redux/CartSlice";
+import Checkout from "../components/checkout/Checkout";
+
+const _ = require("lodash");
 const Wrapper = styled.div`
   background-color: #fff;
   padding: 20px;
@@ -45,6 +57,7 @@ const Role = styled.div`
   font-size: 12px;
   font-weight: 700;
   color: #40a9ff;
+  text-transform: capitalize;
 `;
 
 const More = styled.div`
@@ -132,13 +145,23 @@ const StyledInputNumber = styled(InputNumber)`
   font-size: 12px;
 `;
 
-const Sidebar = () => {
+const Sidebar = ({ user }) => {
   const dispatch = useDispatch();
-  const isRefreshFood = useSelector((state) => state.food.isRefresh);
 
+  const [isOpenModal, setIsOpenModal] = React.useState(false);
+
+  const isRefreshFood = useSelector((state) => state.food.isRefresh);
+  const isRefreshCart = useSelector((state) => state.cart.isRefresh);
+
+  const cart = useSelector((state) => state.cart.data);
   const foods = useSelector((state) => state.food.data);
 
   const [total, setTotal] = React.useState(0);
+
+  // console.log(
+  //   _.sumBy(cart?.info.foods, (f) => f.unit_price),
+  //   total
+  // );
 
   const { signOut } = authenSlice.actions;
 
@@ -146,17 +169,22 @@ const Sidebar = () => {
     dispatch(getFoods());
   }, [isRefreshFood]);
 
+  React.useEffect(() => {
+    dispatch(getCartInfo({ username: user.username }));
+    setTotal(_.sumBy(cart?.info.foods, (f) => f.unit_price * f.quantity));
+  }, [isRefreshCart]);
+
   const menu = (
     <Menu>
-      <Menu.Item>Profile</Menu.Item>
       <Menu.Item onClick={() => dispatch(signOut())}>Logout</Menu.Item>
     </Menu>
   );
   const renderCart = () => {
-    return foods.map((food) => {
+    // console.log("first", cart);
+    return cart?.info.foods?.map((food) => {
       return (
         <>
-          <Food>
+          <Food key={food.food_id}>
             <Avatar
               style={{ marginRight: 10 }}
               size={60}
@@ -172,16 +200,33 @@ const Sidebar = () => {
               <HorizontalWrapper>
                 <StyledInputNumber
                   size="small"
-                  defaultValue={1}
+                  value={food.quantity}
                   min={1}
                   max={100}
                   controls={true}
                   onChange={(e) => {
-                    setTotal(total + parseInt(e) * food.unit_price);
+                    dispatch(
+                      updateFood({
+                        food_id: food.food_id,
+                        quantity: e,
+                        username: user.username,
+                      })
+                    );
                   }}
                 />
-                {/* <FoodName></FoodName> */}
-                <TbTrash style={{ marginTop: 3 }} />
+                <TbTrash
+                  onClick={() => {
+                    message.success("Delete food from cart successfully");
+
+                    dispatch(
+                      deleteFood({
+                        food_id: food.food_id,
+                        username: user.username,
+                      })
+                    );
+                  }}
+                  style={{ marginTop: 3 }}
+                />
               </HorizontalWrapper>
             </VerticalWrapper>
           </Food>
@@ -201,8 +246,8 @@ const Sidebar = () => {
               src="https://joeschmoe.io/api/v1/random"
             />
             <UselessWrapper>
-              <UserName>Andrew Kerr</UserName>
-              <Role>User</Role>
+              <UserName>{user.username}</UserName>
+              <Role>{user.role}</Role>
             </UselessWrapper>
           </Profile>
           <Dropdown overlay={menu}>
@@ -221,10 +266,21 @@ const Sidebar = () => {
             <TotalTitle>Total</TotalTitle>
             <TotalValue>${total}</TotalValue>
           </HorizontalWrapper>
-          <StyledButton prefix={<AiFillDollarCircle />} type="primary">
+          <StyledButton
+            onClick={() => setIsOpenModal(true)}
+            prefix={<AiFillDollarCircle />}
+            type="primary"
+          >
             Checkout
           </StyledButton>
         </BottomComponent>
+        {isOpenModal ? (
+          <Checkout
+            isOpen={isOpenModal}
+            setIsOpen={setIsOpenModal}
+            cart={cart}
+          />
+        ) : null}
       </Wrapper>
     </>
   );

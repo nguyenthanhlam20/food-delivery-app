@@ -9,5 +9,7 @@ export const CONSTANT_ROUTE = {
   MANAGE_CATEGORY: "/authen/manage/category",
   MANAGE_FOOD: "/authen/manage/food",
   MANAGE_RESTAURANT: "/authen/manage/restaurant",
-  MANAGE_CART: "authen/manage/cart",
+  MANAGE_CART: "/authen/manage/cart",
+  MANAGE_BILL: "/authen/manage/bill",
+  MANAGE_ORDER: "/authen/manage/order",
 };

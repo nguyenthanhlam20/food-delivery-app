@@ -1,5 +1,6 @@
-import jwt from "jsonwebtoken";
+import jwt_decode from "jwt-decode";
 export const decryptToken = (token) => {
-  const decoded = "";
-  console.log("decoded", decoded);
+  // console.log("token is being decoded", token);
+  return jwt_decode(token);
+  // console.log("decoded value", decoded);
 };

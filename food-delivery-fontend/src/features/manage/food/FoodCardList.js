@@ -1,7 +1,11 @@
-import { Avatar, Button, Card, Carousel, Image, Skeleton } from "antd";
+import { Avatar, Button, Card, Carousel, Image, message, Skeleton } from "antd";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-
+import cartSlice, { insertFood, updateFood } from "../../../redux/CartSlice";
+message.config({
+  maxCount: 1,
+});
 const { Meta } = Card;
 
 const StyledCard = styled(Card)`
@@ -24,12 +28,17 @@ const StyledButton = styled(Button)`
 `;
 
 const FoodCardList = ({ foods }) => {
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.authen.user);
+  const cart = useSelector((state) => state.cart.data);
+
   const renderFood = () => {
-    console.log(foods);
-    return foods.map((food) => {
+    // console.log(foods);
+    return foods?.map((food) => {
       return (
         <>
-          <StyledCard>
+          <StyledCard key={food.food_id}>
             <Avatar size={150} src={food.images[0].url} />
             <Meta
               style={{ width: "100%", margin: "10px 0px" }}
@@ -58,7 +67,39 @@ const FoodCardList = ({ foods }) => {
                 </div>
               }
             />
-            <StyledButton>Add To Card</StyledButton>
+            <StyledButton
+              onClick={() => {
+                const existFood = cart?.info.foods.filter((fo) => {
+                  return (
+                    food.food_name === fo.food_name &&
+                    food.unit_price === fo.unit_price
+                  );
+                });
+                // console.log("run here", existFood);
+
+                message.success("Add food to cart successfully");
+                if (existFood.length > 0) {
+                  // console.log("exit food");
+                  dispatch(
+                    updateFood({
+                      food_id: food.food_id,
+                      username: user.username,
+                      quantity: existFood[0].quantity + 1,
+                    })
+                  );
+                } else {
+                  dispatch(
+                    insertFood({
+                      food_id: food.food_id,
+                      username: user.username,
+                      quantity: 1,
+                    })
+                  );
+                }
+              }}
+            >
+              Add To Card
+            </StyledButton>
           </StyledCard>
         </>
       );

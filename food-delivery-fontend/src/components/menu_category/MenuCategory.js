@@ -19,7 +19,7 @@ const { Meta } = Card;
 const Wrapper = styled.div``;
 
 const MenuCategory = ({ categories }) => {
-  console.log(categories);
+  // console.log(categories);
   const [isLoading, setIsLoading] = React.useState(true);
 
   const carousel = React.useRef();

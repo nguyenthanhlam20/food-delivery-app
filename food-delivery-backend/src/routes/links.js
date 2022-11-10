@@ -4,6 +4,8 @@ import CategoryController from "../controller/CategoryController";
 import RestaurantController from "../controller/RestaurantController";
 import FoodController from "../controller/FoodController";
 import CartController from "../controller/CartController";
+import OrderController from "../controller/OrderController";
+import BillController from "../controller/BillController";
 export const Links = [
   {
     route: CONSTANT_ROUTE.SIGN_IN,
@@ -156,5 +158,47 @@ export const Links = [
     route: CONSTANT_ROUTE.MANAGE_CART + "/delete/food",
     method: "post",
     handleAction: CartController.deleteFood,
+  },
+
+  {
+    route: CONSTANT_ROUTE.MANAGE_ORDER + "/get/all",
+    method: "get",
+    handleAction: OrderController.getAll,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_ORDER + "/get/by/username",
+    method: "post",
+    handleAction: OrderController.getByUsername,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_ORDER + "/insert",
+    method: "post",
+    handleAction: OrderController.insertOrder,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_ORDER + "/update",
+    method: "post",
+    handleAction: OrderController.updateOrder,
+  },
+
+  {
+    route: CONSTANT_ROUTE.MANAGE_BILL + "/get/all",
+    method: "get",
+    handleAction: BillController.getAll,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_BILL + "/get/by/username",
+    method: "post",
+    handleAction: BillController.getByUsername,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_BILL + "/insert",
+    method: "post",
+    handleAction: BillController.insertOrder,
+  },
+  {
+    route: CONSTANT_ROUTE.MANAGE_BILL + "/update",
+    method: "post",
+    handleAction: BillController.updateOrder,
   },
 ];

@@ -10,7 +10,7 @@ import EditRestaurantPage from "./admin/EditRestaurantPage";
 import Bills from "./user/Bills";
 import Favorite from "./user/Favorite";
 import OrderHistory from "./user/OrderHistory";
-import FoodOrder from "./user/FoodOrder";
+import FoodList from "./user/FoodList";
 
 export {
   SignInPage,
@@ -25,5 +25,5 @@ export {
   Bills,
   Favorite,
   OrderHistory,
-  FoodOrder,
+  FoodList,
 };

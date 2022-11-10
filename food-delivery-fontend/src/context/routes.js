@@ -61,9 +61,9 @@ export const routes = [
     exact: true,
   },
   {
-    path: CONSTANT_ROUTE.FOOD_ORDER,
+    path: CONSTANT_ROUTE.FOOD_LIST,
     isPrivate: true,
-    component: <Pages.FoodOrder />,
+    component: <Pages.FoodList />,
     exact: true,
   },
   {

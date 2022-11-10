@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import authenSlice from "./../redux/authenSlice";
-import defaultAvatar from "./../assets/images/default_avatar.png";
+import authenSlice from "./../../redux/authenSlice";
+// import defaultAvatar from "./../assets/images/default_avatar.png";
 import { MdList } from "react-icons/md";
 
 import styled from "styled-components";
+import { Button } from "antd";
 
 const Wrapper = styled.div`
   display: flex;
@@ -30,10 +31,8 @@ const IconContainer = styled.div`
 
 const PageTitle = styled.h2``;
 
-const AdminHeader = () => {
+const AdminHeader = ({ user }) => {
   const pageTitle = localStorage.getItem("currentPage");
-
-  const user = useSelector((state) => state.authen.user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -49,6 +48,14 @@ const AdminHeader = () => {
           <MdList />
         </IconContainer>
         <PageTitle>{pageTitle}</PageTitle>
+        <Button
+          onClick={() => {
+            dispatch(signOut());
+            navigate("/");
+          }}
+        >
+          Logout
+        </Button>
       </Wrapper>
     </>
   );

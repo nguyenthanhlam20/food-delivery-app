@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Input, Image, Button } from "antd";
 import { AiOutlineSearch } from "react-icons/ai";
 import HeaderImage from "./../../assets/images/header-image.png";
+import Slider from "../slider/Slider";
 
 const Wrapper = styled.div`
   width: 950px;
@@ -61,28 +62,23 @@ const StyledInput = styled(Input)`
     color: #40a9ff;
   }
 `;
-const UserHeader = () => {
+const UserHeader = ({ user }) => {
+  // console.log(user);
   return (
     <>
       <Wrapper>
         <TopComponent>
           <LeftComponent>
-            <Welcome>Hello Andrew Kerr!</Welcome>
+            <Welcome>Hello {user.username}!</Welcome>
             <Message>What do you want to Eat?</Message>
           </LeftComponent>
-          <RightComponent>
+          {/* <RightComponent>
             <StyledInput
               prefix={<AiOutlineSearch />}
               placeholder="Search..."
             ></StyledInput>
-          </RightComponent>
+          </RightComponent> */}
         </TopComponent>
-        <BottomComponent>
-          <LeftComponent>
-            <Title>Order Now You Will Be Discount Up To 50%</Title>
-            <Button style={{ width: "120px" }}>Get Coupon</Button>
-          </LeftComponent>
-        </BottomComponent>
       </Wrapper>
     </>
   );

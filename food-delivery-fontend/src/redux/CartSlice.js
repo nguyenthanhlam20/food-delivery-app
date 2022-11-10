@@ -4,8 +4,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { cartServices } from "../services";
 import { async } from "@firebase/util";
 
-export const getCartInfo = createAsyncThunk("cart/get", async () => {
-  const response = await cartServices.getCartInfo();
+export const getCartInfo = createAsyncThunk("cart/get", async (username) => {
+  const response = await cartServices.getCartInfo(username);
   // console.log(response);
   return response;
 });
@@ -17,9 +17,7 @@ export const insertFood = createAsyncThunk("cart/insert", async (cart) => {
 });
 
 export const updateFood = createAsyncThunk("cart/update", async (cart) => {
-  console.log("cart is being updated: ", cart.cart_id);
-  console.log("Old images:", cart.old_images);
-  console.log("New images:", cart.new_images);
+  console.log("food in cart is being updated: ", cart);
   const response = await cartServices.updateFood(cart);
   return response;
 });
@@ -33,7 +31,7 @@ export const deleteFood = createAsyncThunk("cart/delete", async (cartId) => {
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    data: [],
+    data: null,
     isRefresh: false,
   },
   reducers: {},
@@ -42,26 +40,26 @@ const cartSlice = createSlice({
       .addCase(getCartInfo.fulfilled, (state, action) => {
         state.data = action.payload;
         state.isRefresh = false;
-        console.log("Get categories successfully", state.data);
+        console.log("Get cart successfully", state.data);
       })
 
       .addCase(insertFood.fulfilled, (state, action) => {
         if (action.payload.rowAffected == 1) {
           state.isRefresh = true;
-          console.log("insert succesffuly");
+          console.log("insert food to cart succesffuly");
         }
       })
 
       .addCase(updateFood.fulfilled, (state, action) => {
         if (action.payload.rowAffected == 1) {
           state.isRefresh = true;
-          console.log("edit succesffuly");
+          console.log("edit food in cart succesffuly");
         }
       })
       .addCase(deleteFood.fulfilled, (state, action) => {
         if (action.payload.rowAffected > 0) {
           state.isRefresh = true;
-          console.log("delete succesffuly");
+          console.log("delee food from cart succesffuly");
         }
       });
   },

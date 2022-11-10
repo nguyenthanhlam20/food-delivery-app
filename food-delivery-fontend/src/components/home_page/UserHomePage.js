@@ -9,6 +9,7 @@ import { getRestaurants } from "../../redux/restaurantSlice";
 import MenuCategory from "../menu_category/MenuCategory";
 import PopularFood from "../popular_food/PopularFood";
 import NearbyRestaurant from "../restaurant/NearbyRestaurant";
+import Slider from "./../slider/Slider";
 
 const Wrapper = styled.div`
   padding: 0px 25px 25px 25px;
@@ -42,6 +43,7 @@ const UserHomePage = () => {
     <>
       <Wrapper>
         <Space style={{ width: "100%" }} size={15} direction="vertical">
+          <Slider />
           <MenuCategory categories={categories} />
           <PopularFood foods={foods} />
           <NearbyRestaurant restaurants={restaurants} />

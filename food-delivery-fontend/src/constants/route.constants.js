@@ -11,9 +11,11 @@ export const CONSTANT_ROUTE = {
   MANAGE_RESTAURANT: "/authen/manage/restaurant",
   INSERT_RESTAURANT: "/authen/manage/restaurant/insert",
   EDIT_RESTAURANT: "/authen/manage/restaurant/edit",
+  MANAGE_BILL: "/authen/manage/bill",
+  MANAGE_ORDER: "/authen/manage/order",
 
-  FOOD_ORDER: "/authen/food/order",
+  FOOD_LIST: "/authen/food/list",
   FAVORITE: "/authen/favorite",
   ORDER_HISTORY: "/authen/order/history",
-  BILLS: "/authen/order/bills",
+  BILLS: "/authen/bills",
 };

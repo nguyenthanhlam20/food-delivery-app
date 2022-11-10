@@ -19,7 +19,7 @@ const { Meta } = Card;
 const Wrapper = styled.div``;
 
 const NearbyRestaurant = ({ restaurants }) => {
-  console.log(restaurants);
+  // console.log(restaurants);
   const [isLoading, setIsLoading] = React.useState(true);
 
   const carousel = React.useRef();
@@ -40,12 +40,12 @@ const NearbyRestaurant = ({ restaurants }) => {
 
   const renderImage = (images) => {
     return images.map((image, index) => {
-      return <CardImage key={index} src={image.url} />;
+      return <CardImage key={`image-${index}`} src={image.url} />;
     });
   };
-  const renderColumn = (cateSlice) => {
-    return cateSlice.map((restaurant) => (
-      <Col span={8}>
+  const renderColumn = (restaurantSlice) => {
+    return restaurantSlice.map((restaurant, index) => (
+      <Col key={restaurant.restaurant_id} span={8}>
         <Card
           className="card-menu-category"
           hoverable
@@ -92,20 +92,20 @@ const NearbyRestaurant = ({ restaurants }) => {
     if (remain != 0 && rowNumber === rows - 1) {
       jumpStep = remain;
     }
-    const cateSlice = restaurants.slice(index, index + jumpStep);
-    // console.log(`cateSlice ${rowNumber}`, cateSlice);
+    const restaurantSlice = restaurants.slice(index, index + jumpStep);
+    // console.log(`restaurantSlice ${rowNumber}`, restaurantSlice);
     return (
       <>
-        <div>
+        <div key={rowNumber}>
           <Row style={{ display: "flex" }} type="flex" gutter={[12, 12]}>
-            {renderColumn(cateSlice)}
+            {renderColumn(restaurantSlice)}
           </Row>
         </div>
       </>
     );
   };
 
-  const renderrestaurant = () => {
+  const renderRestaurant = () => {
     return arr.map((rowNumber) => {
       let index = rowNumber * 3;
       return renderRow(index, rowNumber);
@@ -122,7 +122,7 @@ const NearbyRestaurant = ({ restaurants }) => {
           draggable
           dots={false}
         >
-          {renderrestaurant()}
+          {renderRestaurant()}
         </StyledCarousel>
         {/* <Button
           onClick={() => {

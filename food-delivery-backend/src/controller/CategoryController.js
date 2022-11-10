@@ -53,7 +53,7 @@ const CategoryController = {
                     on i.image_id = ci.image_id where c.category_id = ${categoryId}`;
     const data = await executeQuery(queryString);
 
-    console.log("category images: ", data);
+    // console.log("category images: ", data);
 
     return res.json({ category_images: data });
   },
@@ -82,7 +82,7 @@ const CategoryController = {
                         '${image.url}', 
                         '${status}')`;
       executeNonQuery(queryString);
-      console.log("run here");
+      // console.log("run here");
 
       queryString = `INSERT INTO [dbo].[Category_Image]
                         ([category_id]
@@ -93,7 +93,7 @@ const CategoryController = {
       executeNonQuery(queryString);
     });
 
-    console.log(data);
+    // console.log(data);
 
     return res.json({ category: category, rowAffected: data });
   },
@@ -115,7 +115,7 @@ const CategoryController = {
     queryString = `delete from category where category_id = '${categoryId}'`;
 
     const data = await executeNonQuery(queryString);
-    console.log(data);
+    // console.log(data);
 
     return res.json({ categoryId: categoryId, rowAffected: data.at(0) });
   },

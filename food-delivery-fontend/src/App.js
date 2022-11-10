@@ -16,7 +16,9 @@ import styled from "styled-components";
 import Footer from "./layouts/Footer.";
 import Sidebar from "./layouts/Sidebar";
 import { SignInPage } from "./pages";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { decryptToken } from "./helpers/decryptToken";
+import authenSlice from "./redux/authenSlice";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -39,11 +41,21 @@ const PrivateRoute = ({ element }) => {
 };
 
 function App() {
+  const dispatch = useDispatch();
+  const { setUser } = authenSlice.actions;
   let token = useSelector((state) => state.authen.token);
-
+  let user = null;
   if (token === null) {
     token = sessionStorage.getItem("token");
+    if (token) {
+      user = decryptToken(token);
+      dispatch(setUser(user));
+    }
+  } else {
+    user = decryptToken(token);
+    dispatch(setUser(user));
   }
+
   const [isRefresh, setIsRefresh] = React.useState(false);
 
   const renderRoute = () => {
@@ -54,7 +66,7 @@ function App() {
           path={route.path}
           element={
             route.isPrivate ? (
-              <PrivateRoute element={route.element} />
+              <PrivateRoute element={route.component} />
             ) : (
               route.component
             )
@@ -65,7 +77,7 @@ function App() {
     });
   };
 
-  console.log("render");
+  // console.log("render");
 
   React.useEffect(() => {
     setIsRefresh(true);
@@ -83,7 +95,7 @@ function App() {
             <Routes>{renderRoute()}</Routes>
             {/* <Footer /> */}
           </InnerWrapper>
-          {token ? <Sidebar /> : null}
+          {user?.role === "user" ? <Sidebar user={user} /> : null}
         </OuterWrapper>
       </Router>
     </>

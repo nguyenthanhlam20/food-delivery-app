@@ -17,10 +17,10 @@ const UserLinks = [
     path: CONSTANT_ROUTE.HOME_PAGE,
   },
   {
-    name: "Food Order",
+    name: "Food",
     icon: <MdFoodBank />,
     role: ROLE.USER,
-    path: CONSTANT_ROUTE.FOOD_ORDER,
+    path: CONSTANT_ROUTE.FOOD_LIST,
   },
   {
     name: "Favorite",

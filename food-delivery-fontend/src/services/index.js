@@ -4,6 +4,8 @@ import categoryService from "./categoryService";
 import restaurantServices from "./restaurantServices";
 import foodServices from "./foodServices";
 import cartServices from "./cartServices";
+import orderServices from "./orderServices";
+import billServices from "./billServices";
 
 export {
   authenServices,
@@ -12,4 +14,6 @@ export {
   restaurantServices,
   foodServices,
   cartServices,
+  orderServices,
+  billServices,
 };

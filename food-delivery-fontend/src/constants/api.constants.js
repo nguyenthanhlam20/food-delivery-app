@@ -54,6 +54,17 @@ export const API = {
       UPDATE_FOOD: process.env.REACT_APP_CART_UPDATE_FOOD,
       DELETE_FOOD: process.env.REACT_APP_CART_DELETE_FOOD,
     },
-    MANAGE_BILL: {},
+    MANAGE_ORDER: {
+      GET_ALL: process.env.REACT_APP_ORDER_GET_ALL,
+      GET_BY_USERNAME: process.env.REACT_APP_ORDER_GET_BY_USERNAME,
+      INSERT_ORDER: process.env.REACT_APP_ORDER_INSERT,
+      UPDATE_ORDER: process.env.REACT_APP_ORDER_UPDATE,
+    },
+    MANAGE_BILL: {
+      GET_ALL: process.env.REACT_APP_BILL_GET_ALL,
+      GET_BY_USERNAME: process.env.REACT_APP_BILL_GET_BY_USERNAME,
+      INSERT_BILL: process.env.REACT_APP_BILL_INSERT,
+      UPDATE_BILL: process.env.REACT_APP_BILL_UPDATE,
+    },
   },
 };

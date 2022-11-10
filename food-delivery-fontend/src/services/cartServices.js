@@ -9,6 +9,7 @@ const cartServices = {
   },
 
   insertFood: async (cart) => {
+    console.log("ccc", cart);
     const response = await axios.post(API.ADMIN.MANAGE_CART.INSERT_FOOD, cart);
     return response.data;
   },

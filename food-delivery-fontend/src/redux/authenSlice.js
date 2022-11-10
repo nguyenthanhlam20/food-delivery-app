@@ -29,6 +29,9 @@ const authenSlice = createSlice({
     resetCreateAccountStatus: (state, action) => {
       state.createAccountStatus = false;
     },
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(signin.fulfilled, (state, action) => {

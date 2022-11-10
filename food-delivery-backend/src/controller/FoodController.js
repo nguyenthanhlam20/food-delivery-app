@@ -40,7 +40,7 @@ const FoodController = {
       newFoods.push(food);
     }
 
-    console.log("foods", newFoods);
+    // console.log("foods", newFoods);
     return res.json(newFoods);
   },
   getFoodImages: async (req, res) => {
@@ -54,7 +54,7 @@ const FoodController = {
                     on i.image_id = ci.image_id where c.food_id = ${foodId}`;
     const data = await executeQuery(queryString);
 
-    console.log("food images: ", data);
+    // console.log("food images: ", data);
 
     return res.json({ food_images: data });
   },
@@ -104,7 +104,7 @@ const FoodController = {
       executeNonQuery(queryString);
     });
 
-    console.log("data return after inserting food", data);
+    // console.log("data return after inserting food", data);
 
     return res.json({ food: food, rowAffected: data });
   },
@@ -126,7 +126,7 @@ const FoodController = {
     queryString = `delete from food where food_id = '${foodId}'`;
 
     const data = await executeNonQuery(queryString);
-    console.log(data);
+    // console.log(data);
 
     return res.json({ foodId: foodId, rowAffected: data.at(0) });
   },
@@ -151,7 +151,7 @@ const FoodController = {
     const oldImages = food.old_images;
     const newImages = food.images;
 
-    console.log("first");
+    // console.log("first");
     let queryString = `SELECT image_id
                        INTO [Temp_Table_${food.food_id}]
                        FROM [Image]
@@ -163,10 +163,10 @@ const FoodController = {
                         DELETE FROM [Image] where image_id in (SELECT * FROM [Temp_Table_${food.food_id}])
                         DROP TABLE [Temp_Table_${food.food_id}]`;
 
-    console.log("second");
+    // console.log("second");
     await executeNonQuery(queryString);
 
-    console.log("third");
+    // console.log("third");
     queryString = `UPDATE [dbo].[food]
                  SET [food_name] = '${food.food_name}'
                     ,[category_id] = '${food.category_id}'
@@ -175,7 +175,7 @@ const FoodController = {
                     ,[description] =  '${food.description}'
                     ,[is_active] = '${food.is_active}'
                  WHERE [food_id] =  ${food.food_id}`;
-    console.log("fourth", queryString);
+    // console.log("fourth", queryString);
     const data = await executeNonQuery(queryString);
     newImages.map((image) => {
       // const status = image.status == "done" ? 1 : 0;
@@ -196,7 +196,7 @@ const FoodController = {
                   (${food.food_id},(SELECT IDENT_CURRENT('Image')))`;
       executeNonQuery(queryString);
     });
-    console.log("five");
+    // console.log("five");
 
     console.log("data return after updating food", data);
 

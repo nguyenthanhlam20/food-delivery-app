@@ -99,16 +99,13 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const token = sessionStorage.getItem("token");
-  if (token) {
-    decryptToken(token);
-    // console.log("user after decrypt token", user);
-  }
+  const user = decryptToken(token);
 
   let links = UserLinks;
 
-  // if (user?.role === "admin") {
-  //   links = AdminsLinks;
-  // }
+  if (user?.role === "admin") {
+    links = AdminsLinks;
+  }
 
   const currentPage = localStorage.getItem("currentPage");
 

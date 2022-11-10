@@ -15,6 +15,7 @@ const Title = styled.h3`
 `;
 const StyledCard = styled(Card)`
   background-color: transparent;
+  padding: 0px;
 `;
 const { Meta } = Card;
 
