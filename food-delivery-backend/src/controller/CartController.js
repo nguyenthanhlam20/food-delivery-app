@@ -86,6 +86,18 @@ const CartController = {
 
     return res.json({ rowAffected: data });
   },
+
+  clearCart: async (req, res) => {
+    const username = req.body.username;
+    console.log("cart of username is being cleared", username);
+    const queryString = `DELETE FROM [CART] WHERE [username] = '${username}'`;
+
+    const data = await executeNonQuery(queryString);
+
+    console.log("result after clear cart ", data);
+
+    return res.json({ rowAffected: data });
+  },
 };
 
 export default CartController;

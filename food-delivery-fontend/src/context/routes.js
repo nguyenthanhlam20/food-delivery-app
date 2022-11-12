@@ -84,4 +84,10 @@ export const routes = [
     component: <Pages.Bills />,
     exact: true,
   },
+  {
+    path: CONSTANT_ROUTE.MANAGE_ORDER,
+    isPrivate: true,
+    component: <Pages.ListOrderPage />,
+    exact: true,
+  },
 ];

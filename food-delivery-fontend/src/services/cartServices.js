@@ -22,6 +22,13 @@ const cartServices = {
     const response = await axios.post(API.ADMIN.MANAGE_CART.DELETE_FOOD, cart);
     return response.data;
   },
+  clearCart: async (username) => {
+    const response = await axios.post(
+      API.ADMIN.MANAGE_CART.CLEAR_CART,
+      username
+    );
+    return response.data;
+  },
 };
 
 export default cartServices;

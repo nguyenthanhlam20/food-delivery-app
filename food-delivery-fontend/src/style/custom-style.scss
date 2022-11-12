@@ -27,8 +27,13 @@
     display: none;
 }
 
+.ant-modal {
+    top: 50px;
+}
+
 .checkout-modal {
+
     .ant-modal-body {
-        height: 450px;
+        height: 530;
     }
 }

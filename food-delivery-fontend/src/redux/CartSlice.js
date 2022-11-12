@@ -28,6 +28,12 @@ export const deleteFood = createAsyncThunk("cart/delete", async (cartId) => {
   return response;
 });
 
+export const clearCart = createAsyncThunk("cart/clear", async (username) => {
+  console.log("cart of username is being cleared", username);
+  const response = await cartServices.clearCart(username);
+  return response;
+});
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -60,6 +66,12 @@ const cartSlice = createSlice({
         if (action.payload.rowAffected > 0) {
           state.isRefresh = true;
           console.log("delee food from cart succesffuly");
+        }
+      })
+      .addCase(clearCart.fulfilled, (state, action) => {
+        if (action.payload.rowAffected > 0) {
+          state.isRefresh = true;
+          console.log("clear cart successfully");
         }
       });
   },

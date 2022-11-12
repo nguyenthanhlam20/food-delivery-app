@@ -1,102 +1,70 @@
 import React from "react";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { categoryService } from "../services";
-import { async } from "@firebase/util";
+import { orderServices } from "../services";
 
-export const getCategories = createAsyncThunk("category/get", async () => {
-  const response = await categoryService.getCategories();
-  // console.log(response);
+export const getAll = createAsyncThunk("order/get", async () => {
+  console.log("We are gonna get all orders");
+  const response = await orderServices.getAll();
   return response;
 });
 
-export const getCategoryImages = createAsyncThunk(
-  "category/get/images",
-  async (categoryId) => {
-    // console.log(categoryId);
-    const response = await categoryService.getCategoryImages(categoryId);
+export const getByUsername = createAsyncThunk(
+  "order/get/by/username",
+  async (username) => {
+    console.log("get orders by username", username);
+    const response = await orderServices.getByUsername(username);
     return response;
   }
 );
 
-export const insertCategory = createAsyncThunk(
-  "category/insert",
-  async (category) => {
-    console.log("category being inserted ", category);
-    const response = await categoryService.insertCategory(category);
-    return response;
-  }
-);
+export const insertOrder = createAsyncThunk("order/insert", async (order) => {
+  console.log("order being inserted ", order);
+  const response = await orderServices.insertOrder(order);
+  return response;
+});
 
-export const changeActveStatus = createAsyncThunk(
-  "category/change/status",
-  async (category) => {
-    console.log("category is being change status ", category);
-    const response = await categoryService.changeActveStatus(category);
-    return response;
-  }
-);
+export const updateOrder = createAsyncThunk("order/update", async (order) => {
+  console.log("order is being updated: ", order);
 
-export const updateCategory = createAsyncThunk(
-  "category/update",
-  async (category) => {
-    console.log("Category is being updated: ", category.category_id);
-    console.log("Old images:", category.old_images);
-    console.log("New images:", category.new_images);
-    const response = await categoryService.updateCategory(category);
-    return response;
-  }
-);
+  const response = await orderServices.updateOrder(order);
+  return response;
+});
 
-export const deleteCategory = createAsyncThunk(
-  "category/delete",
-  async (categoryId) => {
-    console.log("Category is being deleted: ", categoryId);
-    const response = await categoryService.deleteCategory(categoryId);
-    return response;
-  }
-);
-
-const categorySlice = createSlice({
-  name: "category",
+const orderSlice = createSlice({
+  name: "order",
   initialState: {
     data: [],
-    images: [],
     isRefresh: false,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getCategories.fulfilled, (state, action) => {
+      .addCase(getAll.fulfilled, (state, action) => {
         state.data = action.payload;
         state.isRefresh = false;
-        console.log("Get categories successfully", state.data);
+        console.log("Get orders successfully", state.data);
       })
-      .addCase(getCategoryImages.fulfilled, (state, action) => {
-        state.images = action.payload.category_images;
-        console.log("Get category images successfully", state.images);
+      .addCase(getByUsername.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.isRefresh = false;
+        console.log("Get orders successfully", state.data);
       })
-      .addCase(insertCategory.fulfilled, (state, action) => {
+
+      .addCase(insertOrder.fulfilled, (state, action) => {
         if (action.payload.rowAffected == 1) {
           state.isRefresh = true;
           console.log("insert succesffuly");
         }
       })
-      .addCase(changeActveStatus.fulfilled, (state, action) => {
+
+      .addCase(updateOrder.fulfilled, (state, action) => {
         if (action.payload.rowAffected == 1) {
           state.isRefresh = true;
-          console.log(
-            `change status of category ${action.payload.category} succesffuly`
-          );
-        }
-      })
-      .addCase(updateCategory.fulfilled, (state, action) => {
-        if (action.payload.rowAffected == 1) {
-          state.isRefresh = true;
-          console.log("edit succesffuly");
+          console.log("update succesffuly");
         }
       });
   },
 });
 
-export default categorySlice;
+export default orderSlice;

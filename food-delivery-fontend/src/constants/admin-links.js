@@ -21,11 +21,12 @@ const AdminLinks = [
     role: ROLE.ADMIN,
     path: CONSTANT_ROUTE.MANAGE_USER,
   },
+
   {
-    name: "Category",
-    icon: <MdCategory />,
+    name: "Order",
+    icon: <MdRestaurant />,
     role: ROLE.ADMIN,
-    path: CONSTANT_ROUTE.MANAGE_CATEGORY,
+    path: CONSTANT_ROUTE.MANAGE_ORDER,
   },
   {
     name: "Food",
@@ -33,6 +34,13 @@ const AdminLinks = [
     role: ROLE.ADMIN,
     path: CONSTANT_ROUTE.MANAGE_FOOD,
   },
+  {
+    name: "Category",
+    icon: <MdCategory />,
+    role: ROLE.ADMIN,
+    path: CONSTANT_ROUTE.MANAGE_CATEGORY,
+  },
+
   {
     name: "Restaurant",
     icon: <MdRestaurant />,

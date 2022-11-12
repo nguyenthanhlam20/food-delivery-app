@@ -53,6 +53,7 @@ export const API = {
       INSERT_FOOD: process.env.REACT_APP_CART_INSERT_FOOD,
       UPDATE_FOOD: process.env.REACT_APP_CART_UPDATE_FOOD,
       DELETE_FOOD: process.env.REACT_APP_CART_DELETE_FOOD,
+      CLEAR_CART: process.env.REACT_APP_CART_CLEAR,
     },
     MANAGE_ORDER: {
       GET_ALL: process.env.REACT_APP_ORDER_GET_ALL,

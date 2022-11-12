@@ -8,6 +8,8 @@ import categorySlice from "./categorySlice";
 import restaurantSlice from "./restaurantSlice";
 import foodSlice from "./foodSlice";
 import cartSlice from "./CartSlice";
+import orderSlice from "./orderSlice";
+import billSlice from "./billSlice";
 
 const rootReducers = combineReducers({
   authen: authenSlice.reducer,
@@ -16,6 +18,8 @@ const rootReducers = combineReducers({
   restaurant: restaurantSlice.reducer,
   food: foodSlice.reducer,
   cart: cartSlice.reducer,
+  order: orderSlice.reducer,
+  bill: billSlice.reducer,
 });
 
 const store = configureStore({

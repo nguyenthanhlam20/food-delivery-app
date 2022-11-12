@@ -159,6 +159,11 @@ export const Links = [
     method: "post",
     handleAction: CartController.deleteFood,
   },
+  {
+    route: CONSTANT_ROUTE.MANAGE_CART + "/clear",
+    method: "post",
+    handleAction: CartController.clearCart,
+  },
 
   {
     route: CONSTANT_ROUTE.MANAGE_ORDER + "/get/all",
@@ -194,11 +199,11 @@ export const Links = [
   {
     route: CONSTANT_ROUTE.MANAGE_BILL + "/insert",
     method: "post",
-    handleAction: BillController.insertOrder,
+    handleAction: BillController.insertBill,
   },
   {
     route: CONSTANT_ROUTE.MANAGE_BILL + "/update",
     method: "post",
-    handleAction: BillController.updateOrder,
+    handleAction: BillController.updateBill,
   },
 ];
