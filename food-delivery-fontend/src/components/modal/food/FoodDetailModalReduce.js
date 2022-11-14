@@ -311,6 +311,8 @@ const FoodDetailModalReduce = ({
               firebaseFolderName="food-images"
               fileList={foodImages}
               setFileList={setFoodImages}
+              maxFile={5}
+              btnMessage={"Click to Upload"}
             />
           </Form.Item>
         </Form>

@@ -60,7 +60,7 @@ const StyledInput = styled(Input)`
 
 const StyledSelect = styled(Select)`
   // border-radius: 10px;
-  width: 150px;
+  width: 200px;
 `;
 
 const StyledRow = styled(Row)`
@@ -373,7 +373,7 @@ const FoodList = () => {
                 <Meta
                   description={
                     <div>
-                      <span style={{ fontWeight: "bold" }}>Category: </span>
+                      <span style={{ fontWeight: "bold" }}>Cate: </span>
                       <Image
                         style={{ width: 24, height: 23 }}
                         src={
@@ -389,7 +389,7 @@ const FoodList = () => {
                 <Meta
                   description={
                     <div>
-                      <span style={{ fontWeight: "bold" }}>Restaurant: </span>
+                      <span style={{ fontWeight: "bold" }}>Res: </span>
                       <Image
                         style={{ width: 24, height: 23 }}
                         src={

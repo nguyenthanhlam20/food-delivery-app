@@ -8,6 +8,7 @@ import {
   InputNumber,
   Segmented,
   Space,
+  Tag,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -232,7 +233,7 @@ const renderOrders = (orders, dispatch, setCurrentOrder, setIsOpenModal) => {
           <OrderFooter>
             <span>Total: </span>
             <CurrencyFormat
-              value={total}
+              value={total + order.delivery_fee}
               displayType={"text"}
               thousandSeparator={true}
               prefix={"$"}
@@ -283,16 +284,39 @@ const renderFoods = (orderDetails) => {
     return (
       <>
         <Food key={order.food_id}>
-          <Avatar
-            style={{ marginRight: 10 }}
-            size={60}
-            src={order.food_images ? order?.food_images[0].url : ""}
-          />
+          <div style={{ position: "relative" }}>
+            <Avatar
+              style={{ marginRight: 10 }}
+              size={60}
+              src={order.food_images ? order.food_images[0].url : ""}
+            />
+            <Tag
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                // fontSize: 8,
+                // width: 14,
+                padding: 0,
+                // height: 14,
+              }}
+              color="blue"
+            >
+              x{order.quantity}
+            </Tag>
+          </div>
           <VerticalWrapper>
             <Padding>
               <HorizontalWrapper>
                 <Text>{order.food_name}</Text>
-                <Text>${order.unit_price}</Text>
+                <Text>
+                  <CurrencyFormat
+                    value={order.unit_price * order.quantity}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"$"}
+                  />
+                </Text>
               </HorizontalWrapper>
             </Padding>
             <HorizontalWrapper></HorizontalWrapper>

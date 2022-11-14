@@ -23,14 +23,19 @@ export const Links = [
     handleAction: UserController.getUser,
   },
   {
+    route: CONSTANT_ROUTE.MANAGE_USER + "/get/byusername",
+    method: "post",
+    handleAction: UserController.getUserByUsername,
+  },
+  {
     route: CONSTANT_ROUTE.MANAGE_USER + "/insert",
     method: "post",
     handleAction: UserController.getUser,
   },
   {
-    route: CONSTANT_ROUTE.MANAGE_USER + "/delete",
+    route: CONSTANT_ROUTE.MANAGE_USER + "/update",
     method: "post",
-    handleAction: UserController.getUser,
+    handleAction: UserController.updateUserInfo,
   },
   {
     route: CONSTANT_ROUTE.MANAGE_CATEGORY + "/get",

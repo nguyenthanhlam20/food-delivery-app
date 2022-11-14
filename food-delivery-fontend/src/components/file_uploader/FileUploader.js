@@ -26,7 +26,13 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const FileUploader = ({ firebaseFolderName, fileList, setFileList }) => {
+const FileUploader = ({
+  firebaseFolderName,
+  fileList,
+  setFileList,
+  maxFile,
+  btnMessage,
+}) => {
   const [currentFile, setCurrentFile] = React.useState(null);
   // console.log("RE-RENDER FILE UPLOADER");
   if (currentFile != null) {
@@ -69,6 +75,8 @@ const FileUploader = ({ firebaseFolderName, fileList, setFileList }) => {
   return (
     <>
       <Upload
+        style={{ width: "100%" }}
+        maxCount={maxFile}
         accept="image/*"
         // data={(file) => ((file.status === "done"))}
         beforeUpload={(file) => {
@@ -96,7 +104,7 @@ const FileUploader = ({ firebaseFolderName, fileList, setFileList }) => {
         }}
       >
         <Button type="primary" icon={<UploadOutlined />}>
-          Click to Upload
+          {btnMessage}
         </Button>
       </Upload>
     </>

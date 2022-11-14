@@ -15,8 +15,13 @@ import {
   Carousel,
   Space,
   Image,
+  Pagination,
 } from "antd";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  LeftOutlined,
+  RightOutlined,
+  PlusCircleFilled,
+} from "@ant-design/icons";
 import FoodDetailModal from "../../../components/modal/food/FoodDetailModal";
 
 import foodServices from "./../../../services/foodServices";
@@ -115,7 +120,7 @@ const SubHeaderComponent = ({
 }) => (
   <SubHeaderWrapper>
     <Filter>
-      <StyledInput
+      <Input
         placeholder="Search food"
         allowClear
         // onChange={onFilter}
@@ -136,7 +141,7 @@ const SubHeaderComponent = ({
         setCurrentFood(null);
         setIsInsertFood(true);
       }}
-      icon={<MdAddCircle />}
+      icon={<PlusCircleFilled />}
     >
       Add New Food
     </StyledButton>
@@ -145,15 +150,18 @@ const SubHeaderComponent = ({
 
 export const ListFood = ({ foods, categories, restaurants }) => {
   // console.log("list foods: ", foods);
-  let rows = foods.length / 4;
 
-  const remain = foods.length % 4;
-  if (remain != 0) rows += 1;
+  let pages = parseInt(foods.length / 8);
 
-  const arr = [];
+  const [currentPage, setCurrentPage] = React.useState(1);
 
-  for (let i = 0; i < rows; i++) {
-    arr.push(i);
+  const itemsRemain = foods.length % 8;
+  if (itemsRemain !== 0) pages++;
+
+  const arrPage = [];
+
+  for (let i = 0; i < pages; i++) {
+    arrPage.push(i);
   }
 
   const renderImage = (images) => {
@@ -172,9 +180,9 @@ export const ListFood = ({ foods, categories, restaurants }) => {
     }
   };
 
-  const renderColumn = (cateSlice) => {
+  const renderColumn = (foodSlice) => {
     // console.log(categories);
-    return cateSlice.map((food) => {
+    return foodSlice.map((food) => {
       const categoryResult = categories.filter(
         (category) => category.category_id === food.category_id
       );
@@ -185,7 +193,7 @@ export const ListFood = ({ foods, categories, restaurants }) => {
       const foodRestaurant = restaurantResult[0];
       return (
         <Skeleton loading={false} active avatar>
-          <Col span={6}>
+          <Col span={4}>
             <Card
               hoverable
               style={{
@@ -211,7 +219,7 @@ export const ListFood = ({ foods, categories, restaurants }) => {
                         display: "flex",
                         flexDirection: "row",
                         width: "100%",
-                        gap: 50,
+                        // gap: 50,
                         justifyContent: "space-between",
                       }}
                     >
@@ -223,7 +231,7 @@ export const ListFood = ({ foods, categories, restaurants }) => {
                 <Meta
                   description={
                     <div>
-                      <span style={{ fontWeight: "bold" }}>Category: </span>
+                      <span style={{ fontWeight: "bold" }}>Cate: </span>
                       <Image
                         style={{ width: 24, height: 23 }}
                         src={foodCategory?.images[0].url}
@@ -235,7 +243,7 @@ export const ListFood = ({ foods, categories, restaurants }) => {
                 <Meta
                   description={
                     <div>
-                      <span style={{ fontWeight: "bold" }}>Restaurant: </span>
+                      <span style={{ fontWeight: "bold" }}>Res: </span>
                       <Image
                         style={{ width: 24, height: 23 }}
                         src={foodRestaurant?.images[0].url}
@@ -268,32 +276,58 @@ export const ListFood = ({ foods, categories, restaurants }) => {
     });
   };
 
-  const renderRow = (index, rowNumber) => {
-    let jumpStep = 4;
+  const renderRow = (index, rowNumber, rows, remain, foodSlice) => {
+    let jumpStep = 6;
     if (remain != 0 && rowNumber === rows - 1) {
       jumpStep = remain;
     }
-    const cateSlice = foods.slice(index, index + jumpStep);
-    // console.log(`cateSlice ${rowNumber}`, cateSlice);
+    const fos = foodSlice.slice(index, index + jumpStep);
+    // console.log(`foodSlice ${rowNumber}`, foodSlice);
     return (
       <>
         <StyledRow type="flex" gutter={[24, 24]}>
-          {renderColumn(cateSlice)}
+          {renderColumn(fos)}
         </StyledRow>
       </>
     );
   };
 
-  const renderFood = () => {
+  const renderPage = () => {
+    return arrPage.map((pageNumber) => {
+      return <div>{renderFood(pageNumber)}</div>;
+    });
+  };
+
+  const renderFood = (pageNumber) => {
+    let start = pageNumber * 8;
+    let end = start + 8;
+    if (pageNumber === pages - 1 && itemsRemain !== 0) {
+      end = start + itemsRemain;
+    }
+
+    const foodSlice = foods.slice(start, end);
+
+    let rows = parseInt(foodSlice.length / 6);
+    const remain = foodSlice.length % 6;
+    if (remain != 0) rows += 1;
+
+    const arr = [];
+
+    for (let i = 0; i < rows; i++) {
+      arr.push(i);
+    }
+
     return arr.map((rowNumber) => {
-      let index = rowNumber * 4;
-      return renderRow(index, rowNumber);
+      let index = rowNumber * 6;
+      return renderRow(index, rowNumber, rows, remain, foodSlice);
     });
   };
 
   //use
 
   const dispatch = useDispatch();
+
+  const carousel = React.useRef();
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
   const [currentFood, setCurrentFood] = React.useState();
@@ -359,7 +393,21 @@ export const ListFood = ({ foods, categories, restaurants }) => {
         />
       </HeaderWrapper>
       <Wrapper>
-        <div className="site-card-wrapper">{renderFood()}</div>
+        <div className="site-card-wrapper">
+          <Carousel ref={carousel} dots={false}>
+            {renderPage()}
+          </Carousel>
+        </div>
+        <div style={{ marginTop: 20, textAlign: "right" }}>
+          <Pagination
+            onChange={(e) => {
+              carousel.current.goTo(e - 1);
+              setCurrentPage(e);
+            }}
+            current={currentPage}
+            total={pages * 10}
+          />
+        </div>
       </Wrapper>
     </>
   );

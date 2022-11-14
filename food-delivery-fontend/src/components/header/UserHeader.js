@@ -72,12 +72,6 @@ const UserHeader = ({ user }) => {
             <Welcome>Hello {user.username}!</Welcome>
             <Message>What do you want to Eat?</Message>
           </LeftComponent>
-          {/* <RightComponent>
-            <StyledInput
-              prefix={<AiOutlineSearch />}
-              placeholder="Search..."
-            ></StyledInput>
-          </RightComponent> */}
         </TopComponent>
       </Wrapper>
     </>

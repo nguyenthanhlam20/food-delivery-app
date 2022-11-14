@@ -8,6 +8,7 @@ import {
   Space,
   Steps,
   Table,
+  Tag,
 } from "antd";
 
 import { MdPedalBike, MdCarRental } from "react-icons/md";
@@ -371,10 +372,7 @@ const StepFour = ({ order, cart }) => {
                         .format(" dddd, L")}
                     </Detail>
                     <Detail>
-                      Delivery by:
-                      {moment()
-                        .add(order.delivery_days, "days")
-                        .format(" dddd, L")}
+                      Delivery by: <Tag color="blue">EXPRESS DELIVERY</Tag>
                     </Detail>
                     <Detail>
                       Delivery fee:{" "}

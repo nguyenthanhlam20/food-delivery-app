@@ -133,7 +133,7 @@ const FoodDetailModal = ({
           unit_price: unitPrice,
           description: description,
           old_images: currentFood.images,
-          new_images: foodImages,
+          images: foodImages,
           is_active: isActive,
         })
       );
@@ -365,6 +365,8 @@ const FoodDetailModal = ({
               firebaseFolderName="food-images"
               fileList={foodImages}
               setFileList={setFoodImages}
+              maxFile={5}
+              btnMessage={"Click to Upload"}
             />
           </Form.Item>
         </Form>

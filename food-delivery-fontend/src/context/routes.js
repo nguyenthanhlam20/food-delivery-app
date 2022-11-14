@@ -79,9 +79,9 @@ export const routes = [
     exact: true,
   },
   {
-    path: CONSTANT_ROUTE.BILLS,
+    path: CONSTANT_ROUTE.My_PROFILE,
     isPrivate: true,
-    component: <Pages.Bills />,
+    component: <Pages.MyProfilePage />,
     exact: true,
   },
   {

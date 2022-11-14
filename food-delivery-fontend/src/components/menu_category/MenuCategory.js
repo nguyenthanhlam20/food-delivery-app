@@ -1,4 +1,4 @@
-import { Button, Card, Carousel, Col, Row, Skeleton, Space } from "antd";
+import { Button, Card, Carousel, Col, Row, Skeleton, Space, Tag } from "antd";
 import React from "react";
 import styled from "styled-components";
 
@@ -7,11 +7,12 @@ const CardImage = styled.img`
   width: 5px;
 `;
 const StyledCarousel = styled(Carousel)`
-  padding: 2px 0px;
+  // padding: 10px;
 `;
 
-const Title = styled.h3`
+const Title = styled(Tag)`
   font-weight: 700;
+  margin-bottom: 10px;
 `;
 
 const { Meta } = Card;
@@ -26,9 +27,9 @@ const MenuCategory = ({ categories }) => {
 
   setTimeout(() => setIsLoading(false), 1000);
 
-  let rows = parseInt(String(categories.length / 6));
+  let rows = parseInt(String(categories.length / 8));
 
-  const remain = categories.length % 6;
+  const remain = categories.length % 8;
   if (remain != 0) rows += 1;
   // alert(rows);
 
@@ -45,7 +46,7 @@ const MenuCategory = ({ categories }) => {
   };
   const renderColumn = (cateSlice) => {
     return cateSlice.map((category) => (
-      <Col span={4}>
+      <Col span={3}>
         <Card
           className="card-menu-category"
           hoverable
@@ -85,7 +86,7 @@ const MenuCategory = ({ categories }) => {
   };
 
   const renderRow = (index, rowNumber) => {
-    let jumpStep = 6;
+    let jumpStep = 8;
     if (remain != 0 && rowNumber === rows - 1) {
       jumpStep = remain;
     }
@@ -93,18 +94,20 @@ const MenuCategory = ({ categories }) => {
     // console.log(`cateSlice ${rowNumber}`, cateSlice);
     return (
       <>
-        <div>
-          <Row style={{ display: "flex" }} type="flex" gutter={[12, 12]}>
-            {renderColumn(cateSlice)}
-          </Row>
-        </div>
+        <Row
+          style={{ display: "flex", padding: 2 }}
+          type="flex"
+          gutter={[12, 12]}
+        >
+          {renderColumn(cateSlice)}
+        </Row>
       </>
     );
   };
 
   const renderCategory = () => {
     return arr.map((rowNumber) => {
-      let index = rowNumber * 6;
+      let index = rowNumber * 8;
       return renderRow(index, rowNumber);
     });
   };
@@ -112,7 +115,7 @@ const MenuCategory = ({ categories }) => {
   return (
     <>
       <Wrapper>
-        <Title>Menu Category</Title>
+        <Title color="tomato">{String("menu category").toUpperCase()}</Title>
         <StyledCarousel
           ref={carousel}
           focusOnSelect={true}

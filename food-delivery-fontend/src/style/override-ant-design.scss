@@ -43,6 +43,12 @@
     }
 }
 
+.card-restaurant {
+    .ant-card-body {
+        padding: 15px 10px;
+    }
+}
+
 .ant-card-meta {
     width: 100%;
     display: block;
@@ -81,4 +87,20 @@
 .ant-table,
 .ant-table.ant-table-middle {
     border-radius: 15px;
+}
+
+.ant-pagination-item-active {
+    // color: #fff;
+    background-color: #1890ff;
+}
+
+
+
+.ant-pagination-item-active a {
+    color: #fff;
+
+    &:hover {
+        color: #fff;
+
+    }
 }

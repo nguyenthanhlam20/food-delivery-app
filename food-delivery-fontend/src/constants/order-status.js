@@ -1,23 +1,28 @@
 const OrderStatus = [
   {
+    id: 10,
+    title: "All",
+    color: "silver",
+  },
+  {
     id: -2,
     title: "Cancel",
-    color: "red",
+    color: "tomato",
   },
   {
     id: -1,
     title: "In Progress",
-    color: "blue",
+    color: "gray",
   },
   {
     id: 0,
     title: "Delivering",
-    color: "yellow",
+    color: "LightSkyBlue",
   },
   {
     id: 1,
     title: "Deliverd",
-    color: "green",
+    color: "LawnGreen",
   },
 ];
 

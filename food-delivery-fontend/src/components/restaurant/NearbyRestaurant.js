@@ -1,17 +1,29 @@
-import { Button, Card, Carousel, Col, Row, Skeleton, Space } from "antd";
+import {
+  Avatar,
+  Button,
+  Card,
+  Carousel,
+  Col,
+  Row,
+  Skeleton,
+  Space,
+  Tag,
+} from "antd";
 import React from "react";
+import {
+  MdOutlineEmail,
+  MdOutlineLocationOn,
+  MdOutlinePhone,
+  MdRestaurant,
+} from "react-icons/md";
 import styled from "styled-components";
 
-const CardImage = styled.img`
-  height: 40px;
-  width: 10px;
-`;
 const StyledCarousel = styled(Carousel)`
   padding: 2px 0px;
 `;
-
-const Title = styled.h3`
+const Title = styled(Tag)`
   font-weight: 700;
+  margin-bottom: 10px;
 `;
 
 const { Meta } = Card;
@@ -40,19 +52,19 @@ const NearbyRestaurant = ({ restaurants }) => {
 
   const renderImage = (images) => {
     return images.map((image, index) => {
-      return <CardImage key={`image-${index}`} src={image.url} />;
+      return <Avatar key={`image-${index}`} src={image.url} />;
     });
   };
   const renderColumn = (restaurantSlice) => {
     return restaurantSlice.map((restaurant, index) => (
       <Col key={restaurant.restaurant_id} span={8}>
         <Card
-          className="card-menu-category"
+          className="card-restaurant"
           hoverable
           style={{
             color: "#fff",
             borderRadius: "10px",
-            height: 80,
+            height: 100,
           }}
         >
           {isLoading ? (
@@ -61,23 +73,33 @@ const NearbyRestaurant = ({ restaurants }) => {
             </>
           ) : (
             <>
-              <Space direction="horizontal" size={100}>
-                <Carousel
-                  // arrows={true}
-                  dots={false}
-                  autoplay
-                  style={{ width: "inherit" }}
-                >
-                  {renderImage(restaurant.images)}
-                </Carousel>
+              <Space
+                direction="horizontal"
+                style={{ display: "flex", flexDirection: "row" }}
+                size={25}
+              >
+                <Avatar
+                  key={`image-${index}`}
+                  size={70}
+                  src={restaurant.images[0].url}
+                />
+
                 <Meta
-                  style={{
-                    height: 24,
-                    margin: "5px 0",
-                    padding: "auto",
-                    textAlign: "center",
-                  }}
-                  title={restaurant.restaurant_name}
+                  style={{ padding: 0 }}
+                  key={1}
+                  description={
+                    <>
+                      <div style={{ fontWeight: 700, color: "#000" }}>
+                        <MdRestaurant /> {restaurant.restaurant_name}
+                      </div>
+                      <div>
+                        <MdOutlineLocationOn /> {restaurant.address}
+                      </div>
+                      <div>
+                        <MdOutlinePhone /> {restaurant.phone}
+                      </div>
+                    </>
+                  }
                 />
               </Space>
             </>
@@ -96,11 +118,14 @@ const NearbyRestaurant = ({ restaurants }) => {
     // console.log(`restaurantSlice ${rowNumber}`, restaurantSlice);
     return (
       <>
-        <div key={rowNumber}>
-          <Row style={{ display: "flex" }} type="flex" gutter={[12, 12]}>
-            {renderColumn(restaurantSlice)}
-          </Row>
-        </div>
+        <Row
+          key={rowNumber}
+          style={{ display: "flex", padding: 3 }}
+          type="flex"
+          gutter={[12, 12]}
+        >
+          {renderColumn(restaurantSlice)}
+        </Row>
       </>
     );
   };
@@ -115,7 +140,10 @@ const NearbyRestaurant = ({ restaurants }) => {
   return (
     <>
       <Wrapper>
-        <Title>Nearby Restaurants</Title>
+        <Title color="fuchsia">
+          {String("Nearby Restaurants").toUpperCase()}
+        </Title>
+
         <StyledCarousel
           ref={carousel}
           focusOnSelect={true}
@@ -124,15 +152,6 @@ const NearbyRestaurant = ({ restaurants }) => {
         >
           {renderRestaurant()}
         </StyledCarousel>
-        {/* <Button
-          onClick={() => {
-            console.log("click next");
-            carousel.current.next();
-          }}
-        >
-          next
-        </Button> */}
-        {/* <Button onClick={() => carousel.current.prev()}>previous</Button> */}
       </Wrapper>
     </>
   );

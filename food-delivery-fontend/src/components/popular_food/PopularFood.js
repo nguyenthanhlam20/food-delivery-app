@@ -1,4 +1,14 @@
-import { Button, Card, Carousel, Col, Row, Skeleton, Space } from "antd";
+import {
+  Avatar,
+  Button,
+  Card,
+  Carousel,
+  Col,
+  Row,
+  Skeleton,
+  Space,
+  Tag,
+} from "antd";
 import React from "react";
 import styled from "styled-components";
 
@@ -10,12 +20,12 @@ const StyledCarousel = styled(Carousel)`
   padding: 2px 0px;
 `;
 
-const Title = styled.h3`
+const Title = styled(Tag)`
   font-weight: 700;
+  margin-bottom: 10px;
 `;
 const StyledCard = styled(Card)`
-  background-color: transparent;
-  padding: 0px;
+  // background-color: transparent;
 `;
 const { Meta } = Card;
 
@@ -28,9 +38,9 @@ const PopularFood = ({ foods }) => {
 
   setTimeout(() => setIsLoading(false), 1000);
 
-  let rows = parseInt(String(foods.length / 4));
+  let rows = parseInt(String(foods.length / 6));
 
-  const remain = foods.length % 4;
+  const remain = foods.length % 6;
   if (remain != 0) rows += 1;
   // alert(rows);
 
@@ -47,7 +57,7 @@ const PopularFood = ({ foods }) => {
   };
   const renderColumn = (cateSlice) => {
     return cateSlice.map((food) => (
-      <Col span={6}>
+      <Col span={4}>
         <StyledCard
           className="card-menu-food"
           hoverable
@@ -62,36 +72,32 @@ const PopularFood = ({ foods }) => {
             </>
           ) : (
             <>
-              <Carousel
-                // arrows={true}
-                dots={false}
-                autoplay
-                style={{ width: "inherit" }}
-              >
-                {renderImage(food.images)}
-              </Carousel>
+              <div style={{ position: "relative", marginBottom: 10 }}>
+                <Avatar size={100} src={food.images[0].url} />;
+                <div
+                  style={{
+                    padding: "0px 10px",
+                    backgroundColor: "#40a9ff",
+                    borderRadius: 10,
+                    color: "#fff",
+                    fontSize: 13,
+                    position: "absolute",
+                    right: 0,
+                    bottom: 0,
+                  }}
+                >{`$${food.unit_price}`}</div>
+              </div>
               <Meta
-                style={{ padding: "10px 0px" }}
+                // style={{ padding: "10px" }}
                 title={
                   <div
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "100%",
-                      gap: 50,
+                      fontWeight: 700,
                       fontSize: 13,
-                      justifyContent: "space-between",
+                      textAlign: "center",
                     }}
                   >
-                    <div style={{ fontWeight: 700 }}>{food.food_name}</div>
-                    <div
-                      style={{
-                        padding: "0px 10px",
-                        backgroundColor: "#40a9ff",
-                        borderRadius: 10,
-                        color: "#fff",
-                      }}
-                    >{`$${food.unit_price}`}</div>
+                    {food.food_name}
                   </div>
                 }
               />
@@ -103,7 +109,7 @@ const PopularFood = ({ foods }) => {
   };
 
   const renderRow = (index, rowNumber) => {
-    let jumpStep = 4;
+    let jumpStep = 6;
     if (remain != 0 && rowNumber === rows - 1) {
       jumpStep = remain;
     }
@@ -111,18 +117,20 @@ const PopularFood = ({ foods }) => {
     // console.log(`cateSlice ${rowNumber}`, cateSlice);
     return (
       <>
-        <div>
-          <Row style={{ display: "flex" }} type="flex" gutter={[30, 30]}>
-            {renderColumn(cateSlice)}
-          </Row>
-        </div>
+        <Row
+          style={{ display: "flex", padding: 3 }}
+          type="flex"
+          gutter={[24, 24]}
+        >
+          {renderColumn(cateSlice)}
+        </Row>
       </>
     );
   };
 
   const renderFood = () => {
     return arr.map((rowNumber) => {
-      let index = rowNumber * 4;
+      let index = rowNumber * 6;
       return renderRow(index, rowNumber);
     });
   };
@@ -130,7 +138,8 @@ const PopularFood = ({ foods }) => {
   return (
     <>
       <Wrapper>
-        <Title>Popular Food</Title>
+        <Title color="SeaGreen">{String("Popular Food").toUpperCase()}</Title>
+
         <StyledCarousel
           ref={carousel}
           focusOnSelect={true}

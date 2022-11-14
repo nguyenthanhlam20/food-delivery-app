@@ -25,6 +25,7 @@ const authenSlice = createSlice({
       state.user = null;
       state.token = null;
       sessionStorage.removeItem("token");
+      localStorage.removeItem("currentPage");
     },
     resetCreateAccountStatus: (state, action) => {
       state.createAccountStatus = false;
@@ -39,6 +40,8 @@ const authenSlice = createSlice({
       state.user = user;
       state.token = accessToken;
       sessionStorage.setItem("token", accessToken);
+      localStorage.setItem("currentPage", "Dashboard");
+
       console.log("login successfully", action.payload);
     });
     builder.addCase(signup.fulfilled, (state, action) => {

@@ -39,7 +39,10 @@ const FoodCardList = ({ foods }) => {
       return (
         <>
           <StyledCard key={food.food_id}>
-            <Avatar size={150} src={food.images[0].url} />
+            <Avatar
+              size={150}
+              src={food.images.length > 0 ? food.images[0].url : null}
+            />
             <Meta
               style={{ width: "100%", margin: "10px 0px" }}
               title={

@@ -15,18 +15,18 @@ const OrderController = {
 
       let orderDetails = await executeQuery(queryString);
 
-      // for (let k = 0; k < orderDetails.length; k++) {
-      //   let orderDetail = orderDetails[k];
-      //   queryString = `select i.image_id as [uid],
-      //                         i.image_name as [name],
-      //                         i.url
-      //                   from [Food_Image] ci join food c
-      //                   on ci.food_id = c.food_id join [Image] i
-      //                   on i.image_id = ci.image_id where c.food_id = ${orderDetail.food_id}`;
+      for (let k = 0; k < orderDetails.length; k++) {
+        let orderDetail = orderDetails[k];
+        queryString = `select i.image_id as [uid],
+                              i.image_name as [name],
+                              i.url
+                        from [Food_Image] ci join food c
+                        on ci.food_id = c.food_id join [Image] i
+                        on i.image_id = ci.image_id where c.food_id = ${orderDetail.food_id}`;
 
-      //   let images = await executeQuery(queryString);
-      //   orderDetails[i] = { food_images: images, ...orderDetail };
-      // }
+        let images = await executeQuery(queryString);
+        orderDetails[k] = { food_images: images, ...orderDetail };
+      }
 
       orders[i] = { order_details: orderDetails, ...order };
     }
@@ -45,20 +45,21 @@ const OrderController = {
 
       let orderDetails = await executeQuery(queryString);
 
-      // for (let k = 0; k < orderDetails.length; k++) {
-      //   let orderDetail = orderDetails[k];
-      //   queryString = `select i.image_id as [uid],
-      //                         i.image_name as [name],
-      //                         i.url
-      //                   from [Food_Image] ci join food c
-      //                   on ci.food_id = c.food_id join [Image] i
-      //                   on i.image_id = ci.image_id where c.food_id = ${orderDetail.food_id}`;
+      for (let k = 0; k < orderDetails.length; k++) {
+        let orderDetail = orderDetails[k];
+        queryString = `select i.image_id as [uid],
+                              i.image_name as [name],
+                              i.url
+                        from [Food_Image] ci join food c
+                        on ci.food_id = c.food_id join [Image] i
+                        on i.image_id = ci.image_id where c.food_id = ${orderDetail.food_id}`;
 
-      //   let images = await executeQuery(queryString);
-      //   orderDetails[i] = { food_images: images, ...orderDetail };
-      // }
+        let images = await executeQuery(queryString);
+        orderDetails[k] = { food_images: images, ...orderDetail };
+      }
 
       orders[i] = { order_details: orderDetails, ...order };
+      console.log("first", orders[i]);
     }
 
     return res.json(orders);

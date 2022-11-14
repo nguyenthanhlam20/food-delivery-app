@@ -12,6 +12,7 @@ import Favorite from "./user/Favorite";
 import OrderHistory from "./user/OrderHistory";
 import FoodList from "./user/FoodList";
 import ListOrderPage from "./admin/ListOrderPage";
+import MyProfilePage from "./user/MyProfilePage";
 
 export {
   SignInPage,
@@ -24,6 +25,7 @@ export {
   ListFoodPage,
   InsertRestaurantPage,
   EditRestaurantPage,
+  MyProfilePage,
   Bills,
   Favorite,
   OrderHistory,

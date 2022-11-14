@@ -148,7 +148,7 @@ const FoodController = {
   editFood: async (req, res) => {
     const food = req.body;
     console.log("food is being updated", food);
-    const oldImages = food.old_images;
+    // const oldImages = food.old_images;
     const newImages = food.images;
 
     // console.log("first");

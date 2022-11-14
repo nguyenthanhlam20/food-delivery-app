@@ -42,7 +42,7 @@ const UserHomePage = () => {
   return (
     <>
       <Wrapper>
-        <Space style={{ width: "100%" }} size={15} direction="vertical">
+        <Space style={{ width: "100%" }} size={10} direction="vertical">
           <Slider />
           <MenuCategory categories={categories} />
           <PopularFood foods={foods} />

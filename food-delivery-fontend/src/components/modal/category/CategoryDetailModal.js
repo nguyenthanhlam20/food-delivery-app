@@ -224,6 +224,8 @@ const CategoryDetailModal = ({
               firebaseFolderName="category-images"
               fileList={categoryImages}
               setFileList={setCategoryImages}
+              maxFile={5}
+              btnMessage={"Click to Upload"}
             />
           </Form.Item>
         </Form>

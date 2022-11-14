@@ -46,6 +46,34 @@ const UserController = {
 
     return res.json({ user: user, rowAffected: data });
   },
+  updateUserInfo: async (req, res) => {
+    const user = req.body;
+    console.log("user is being updated", user);
+    const queryString = `UPDATE [dbo].[User]
+                          SET [phone] = '${user.phone}'
+                            ,[first_name] = '${user.first_name}'
+                            ,[last_name] = '${user.last_name}'
+                            ,[gender] = '${user.gender}'
+                            ,[dob] = '${user.dob}'
+                            ,[address] = '${user.address}'
+                            ,[img_url] = '${user.img_url}'
+                            ,[img_name] = '${user.img_name}'
+                            ,[email] = '${user.email}'
+                        WHERE [username] = '${user.username}'`;
+    const data = await executeNonQuery(queryString);
+
+    console.log(data);
+
+    return res.json({ user: user, rowAffected: data });
+  },
+  getUserByUsername: async (req, res) => {
+    const username = req.body.username;
+    console.log("get user info of", username);
+    const queryString = `SELECT * FROM [User] WHERE username = '${username}'`;
+
+    const data = await executeQuery(queryString);
+    return res.json({ data: data[0] });
+  },
 };
 
 export default UserController;

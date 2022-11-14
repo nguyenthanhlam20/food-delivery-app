@@ -95,7 +95,7 @@ const InsertRestaurantPage = () => {
       console.log(data);
     });
 
-    // handleCancel();
+    handleCancel();
   };
 
   const handleCancel = () => {
@@ -309,6 +309,8 @@ const InsertRestaurantPage = () => {
               firebaseFolderName="restaurant-images"
               fileList={restaurantImages}
               setFileList={setRestaurantImages}
+              maxFile={5}
+              btnMessage={"Click to Upload"}
             />
           </Form.Item>
           <Form.Item

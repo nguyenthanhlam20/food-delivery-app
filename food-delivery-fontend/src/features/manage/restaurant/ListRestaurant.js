@@ -16,6 +16,7 @@ import {
   Carousel,
   Skeleton,
   Space,
+  Pagination,
 } from "antd";
 import {
   EditFilled,
@@ -41,10 +42,16 @@ import {
   MdOutlineLocationOn,
   MdOutlinePhone,
   MdOutlineEmail,
+  MdInfo,
+  MdRestaurant,
 } from "react-icons/md";
 
 const { Search } = Input;
 
+const Wrapper = styled.div`
+  margin: 0px 25px 25px 25px;
+  border-radius: 5px;
+`;
 const StyledButton = styled(Button)`
   margin-right: 10px;
 `;
@@ -146,17 +153,20 @@ const SubHeaderComponent = ({ navigate }) => (
 );
 
 export const ListRestaurant = ({ restaurants }) => {
-  // console.log("list restaurants: ", restaurants);
-  let rows = restaurants.length / 4;
+  let pages = parseInt(restaurants.length / 8);
 
-  const remain = restaurants.length % 4;
-  if (remain != 0) rows += 1;
+  const [currentPage, setCurrentPage] = React.useState(1);
 
-  const arr = [];
+  const itemsRemain = restaurants.length % 8;
+  if (itemsRemain !== 0) pages++;
 
-  for (let i = 0; i < rows; i++) {
-    arr.push(i);
+  const arrPage = [];
+
+  for (let i = 0; i < pages; i++) {
+    arrPage.push(i);
   }
+
+  // console.log("list restaurants: ", restaurants);
 
   const [isLoading, setIsLoading] = React.useState(false);
   setTimeout(() => {
@@ -224,6 +234,14 @@ export const ListRestaurant = ({ restaurants }) => {
                 <Meta
                   key={1}
                   description={
+                    <div style={{ fontWeight: 700 }}>
+                      <MdRestaurant /> {restaurant.restaurant_name}
+                    </div>
+                  }
+                />
+                <Meta
+                  key={1}
+                  description={
                     <div>
                       <MdOutlineLocationOn /> {restaurant.address}
                     </div>
@@ -275,26 +293,50 @@ export const ListRestaurant = ({ restaurants }) => {
     ));
   };
 
-  const renderRow = (index, rowNumber) => {
+  const renderRow = (index, rowNumber, rows, remain, restaurantSlice) => {
     let jumpStep = 4;
     if (remain != 0 && rowNumber === rows - 1) {
       jumpStep = remain;
     }
-    const restaurantSlice = restaurants.slice(index, index + jumpStep);
+    const fos = restaurantSlice.slice(index, index + jumpStep);
     // console.log(`restaurantSlice ${rowNumber}`, restaurantSlice);
     return (
       <>
         <StyledRow key={rowNumber} type="flex" gutter={[24, 24]}>
-          {renderColumn(restaurantSlice)}
+          {renderColumn(fos)}
         </StyledRow>
       </>
     );
   };
 
-  const renderRestaurant = () => {
+  const renderPage = () => {
+    return arrPage.map((pageNumber) => {
+      return <div>{renderRestaurant(pageNumber)}</div>;
+    });
+  };
+
+  const renderRestaurant = (pageNumber) => {
+    let start = pageNumber * 8;
+    let end = start + 8;
+    if (pageNumber === pages - 1 && itemsRemain !== 0) {
+      end = start + itemsRemain;
+    }
+
+    const restaurantSlice = restaurants.slice(start, end);
+
+    let rows = parseInt(restaurantSlice.length / 4);
+    const remain = restaurantSlice.length % 4;
+    if (remain != 0) rows += 1;
+
+    const arr = [];
+
+    for (let i = 0; i < rows; i++) {
+      arr.push(i);
+    }
+
     return arr.map((rowNumber) => {
       let index = rowNumber * 4;
-      return renderRow(index, rowNumber);
+      return renderRow(index, rowNumber, rows, remain, restaurantSlice);
     });
   };
 
@@ -336,14 +378,34 @@ export const ListRestaurant = ({ restaurants }) => {
     dispatch(changeActveStatus(restaurant));
   };
 
+  const carousel = React.useRef();
+
   return (
     <>
       <FilterWrapper style={{ backgroundColor: "#fff" }}>
         <SubHeaderComponent navigate={navigate} />
       </FilterWrapper>
-      <ListRestaurantWrapper>
+
+      <Wrapper>
+        <div className="site-card-wrapper">
+          <Carousel ref={carousel} dots={false}>
+            {renderPage()}
+          </Carousel>
+        </div>
+        <div style={{ marginTop: 20, textAlign: "right" }}>
+          <Pagination
+            onChange={(e) => {
+              carousel.current.goTo(e - 1);
+              setCurrentPage(e);
+            }}
+            current={currentPage}
+            total={pages * 10}
+          />
+        </div>
+      </Wrapper>
+      {/* <ListRestaurantWrapper>
         <div className="site-card-wrapper">{renderRestaurant()}</div>
-      </ListRestaurantWrapper>
+      </ListRestaurantWrapper> */}
     </>
   );
 };

@@ -14,6 +14,7 @@ import {
   Carousel,
   Space,
   Skeleton,
+  Pagination,
 } from "antd";
 import {
   createFromIconfontCN,
@@ -163,17 +164,18 @@ const StyledColumn = styled.div`
 
 export const ListCategory = ({ categories }) => {
   // console.log("list categories: ", categories);
-  let rows = categories.length / 6;
+  let pages = parseInt(categories.length / 12);
 
-  const remain = categories.length % 6;
-  if (remain != 0) rows += 1;
+  const [currentPage, setCurrentPage] = React.useState(1);
 
-  const arr = [];
+  const itemsRemain = categories.length % 12;
+  if (itemsRemain !== 0) pages++;
 
-  for (let i = 0; i < rows; i++) {
-    arr.push(i);
+  const arrPage = [];
+
+  for (let i = 0; i < pages; i++) {
+    arrPage.push(i);
   }
-
   const [isLoading, setIsLoading] = React.useState(true);
   setTimeout(() => {
     setIsLoading(false);
@@ -231,26 +233,48 @@ export const ListCategory = ({ categories }) => {
     ));
   };
 
-  const renderRow = (index, rowNumber) => {
+  const renderRow = (index, rowNumber, rows, remain, cateSlice) => {
     let jumpStep = 6;
     if (remain != 0 && rowNumber === rows - 1) {
       jumpStep = remain;
     }
-    const cateSlice = categories.slice(index, index + jumpStep);
+    const fos = cateSlice.slice(index, index + jumpStep);
     // console.log(`cateSlice ${rowNumber}`, cateSlice);
     return (
       <>
         <StyledRow style={{ display: "flex" }} type="flex" gutter={[24, 24]}>
-          {renderColumn(cateSlice)}
+          {renderColumn(fos)}
         </StyledRow>
       </>
     );
   };
+  const renderPage = () => {
+    return arrPage.map((pageNumber) => {
+      return <div>{renderCategory(pageNumber)}</div>;
+    });
+  };
 
-  const renderCategory = () => {
+  const renderCategory = (pageNumber) => {
+    let start = pageNumber * 12;
+    let end = start + 12;
+    if (pageNumber === pages - 1 && itemsRemain !== 0) {
+      end = start + itemsRemain;
+    }
+
+    const cateSlice = categories.slice(start, end);
+
+    let rows = parseInt(cateSlice.length / 4);
+    const remain = cateSlice.length % 4;
+    if (remain != 0) rows += 1;
+
+    const arr = [];
+
+    for (let i = 0; i < rows; i++) {
+      arr.push(i);
+    }
     return arr.map((rowNumber) => {
       let index = rowNumber * 6;
-      return renderRow(index, rowNumber);
+      return renderRow(index, rowNumber, rows, remain, cateSlice);
     });
   };
 
@@ -294,6 +318,7 @@ export const ListCategory = ({ categories }) => {
   const handleChangeStatus = (category) => {
     dispatch(changeActveStatus(category));
   };
+  const carousel = React.useRef();
 
   return (
     <>
@@ -314,6 +339,23 @@ export const ListCategory = ({ categories }) => {
           setIsInsertCategory={setIsInsertCategory}
         />
       </HeaderWrapper>
+      <Wrapper>
+        <div className="site-card-wrapper">
+          <Carousel ref={carousel} dots={false}>
+            {renderPage()}
+          </Carousel>
+        </div>
+        <div style={{ marginTop: 20, textAlign: "right" }}>
+          <Pagination
+            onChange={(e) => {
+              carousel.current.goTo(e - 1);
+              setCurrentPage(e);
+            }}
+            current={currentPage}
+            total={pages * 10}
+          />
+        </div>
+      </Wrapper>
       <Wrapper>
         <div className="site-card-wrapper">{renderCategory()}</div>
       </Wrapper>

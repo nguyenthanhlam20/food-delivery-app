@@ -17,5 +17,5 @@ export const CONSTANT_ROUTE = {
   FOOD_LIST: "/authen/food/list",
   FAVORITE: "/authen/favorite",
   ORDER_HISTORY: "/authen/order/history",
-  BILLS: "/authen/bills",
+  My_PROFILE: "/authen/myprofile",
 };

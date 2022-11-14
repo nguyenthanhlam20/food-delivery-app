@@ -1,12 +1,11 @@
 import { CONSTANT_ROUTE } from "./route.constants";
 import { ROLE } from "./roles";
 import {
-  MdFastfood,
   MdFoodBank,
   MdHome,
   MdFavorite,
   MdHistory,
-  MdBookmarkAdd,
+  MdPerson,
 } from "react-icons/md";
 
 const UserLinks = [
@@ -15,6 +14,12 @@ const UserLinks = [
     icon: <MdHome />,
     role: ROLE.USER,
     path: CONSTANT_ROUTE.HOME_PAGE,
+  },
+  {
+    name: "My Profile",
+    icon: <MdPerson />,
+    role: ROLE.USER,
+    path: CONSTANT_ROUTE.My_PROFILE,
   },
   {
     name: "Food",
@@ -33,12 +38,6 @@ const UserLinks = [
     icon: <MdHistory />,
     role: ROLE.USER,
     path: CONSTANT_ROUTE.ORDER_HISTORY,
-  },
-  {
-    name: "Bills",
-    icon: <MdBookmarkAdd />,
-    role: ROLE.USER,
-    path: CONSTANT_ROUTE.BILLS,
   },
 ];
 

@@ -15,6 +15,7 @@ export const API = {
       INSERT_USER: process.env.REACT_APP_INSERT_USER,
       DELETE_USER: process.env.REACT_APP_DELETE_USER,
       UPDATE_USER: process.env.REACT_APP_UPDATE_USER,
+      GET_BY_USERNAME: process.env.REACT_APP_GET_BY_USERNAME,
     },
     MANAGE_CATEGORY: {
       GET_CATEGORIES: process.env.REACT_APP_GET_CATEGORIES,

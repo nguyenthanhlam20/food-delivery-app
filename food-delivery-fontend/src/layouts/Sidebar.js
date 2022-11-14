@@ -158,11 +158,6 @@ const Sidebar = ({ user }) => {
 
   const [total, setTotal] = React.useState(0);
 
-  // console.log(
-  //   _.sumBy(cart?.info.foods, (f) => f.unit_price),
-  //   total
-  // );
-
   const { signOut } = authenSlice.actions;
 
   React.useEffect(() => {
@@ -179,6 +174,7 @@ const Sidebar = ({ user }) => {
       <Menu.Item onClick={() => dispatch(signOut())}>Logout</Menu.Item>
     </Menu>
   );
+
   const renderCart = () => {
     // console.log("first", cart);
     return cart?.info.foods?.map((food) => {

@@ -36,8 +36,6 @@ export const changeActveStatus = createAsyncThunk(
 
 export const editFood = createAsyncThunk("food/update", async (food) => {
   console.log("food is being updated: ", food);
-  console.log("Old images:", food.old_images);
-  console.log("New images:", food.images);
   const response = await foodServices.editFood(food);
   return response;
 });

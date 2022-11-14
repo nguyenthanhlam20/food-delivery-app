@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Form,
   Image,
@@ -99,7 +100,7 @@ const OrderDetailModal = ({ order, isOpen, setIsOpen }) => {
       render: (record) => (
         <>
           <Space direction="horizontal" size={10}>
-            {/* <Image width={24} height={24} src={record?.images[0].url} /> */}
+            <Avatar size={40} src={record?.food_images[0].url} />
             <span>{record.food_name}</span>
           </Space>
         </>
@@ -212,10 +213,7 @@ const OrderDetailModal = ({ order, isOpen, setIsOpen }) => {
                       {moment(order.shipped_date).format(" dddd, L")}
                     </Detail>
                     <Detail>
-                      Delivery by:
-                      {moment()
-                        .add(order.delivery_days, "days")
-                        .format(" dddd, L")}
+                      Delivery by: <Tag color="blue">EXPRESS DELIVERY</Tag>
                     </Detail>
                     <Detail>
                       Delivery fee:{" "}

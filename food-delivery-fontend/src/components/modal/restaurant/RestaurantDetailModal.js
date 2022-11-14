@@ -345,6 +345,8 @@ const RestaurantDetailModal = ({
               firebaseFolderName="restaurant-images"
               fileList={restaurantImages}
               setFileList={setRestaurantImages}
+              maxFile={5}
+              btnMessage={"Click to Upload"}
             />
           </Form.Item>
           <Form.Item
